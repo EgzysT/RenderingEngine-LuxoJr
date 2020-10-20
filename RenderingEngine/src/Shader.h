@@ -27,5 +27,6 @@ public:
 	//Set Uniforms
 	void SetUniformVec4(const std::string& name, float v0, float v1, float v2, float v3);
 	void SetUniformFloat(const std::string& name, float value);
+	void SetUniformInteger(const std::string& name, int value);
 };
 

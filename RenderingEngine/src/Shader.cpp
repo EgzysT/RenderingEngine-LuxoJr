@@ -58,6 +58,9 @@ GLint Shader::getUniformLocation(const std::string& name)
     if (locationCache != uniformLocationCache.end())
         return locationCache->second;
     GLint location = glGetUniformLocation(rendererID, name.c_str());
+    if (location == -1) {
+        std::cout << "Warning: uniform " << name << " not found." << std::endl;
+    }
     uniformLocationCache[name] = location;
     return location;
 }
@@ -112,4 +115,9 @@ void Shader::SetUniformVec4(const std::string& name, float v0, float v1, float v
 void Shader::SetUniformFloat(const std::string& name, float value)
 {
     glUniform1f(getUniformLocation(name), value);
+}
+
+void Shader::SetUniformInteger(const std::string& name, int value)
+{
+    glUniform1i(getUniformLocation(name), value);
 }

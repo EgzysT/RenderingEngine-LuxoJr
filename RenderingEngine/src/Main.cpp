@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION //THIS DEFINITION IS NECESSARY ONCE, READ THE FILE
+#include <stb_image.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,6 +16,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "Texture.h"
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
     unsigned int id = glCreateShader(type);
@@ -116,11 +119,12 @@ int main(void)
     glfwSetKeyCallback(window, key_callback);
 
     // TEMP BELOW
-    float positions[8] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f,  0.5f,
+    float vertices[] = {
+        //positions    //texture coords
+        -0.5f, -0.5f,   0.0f, 0.0f,
+         0.5f, -0.5f,   1.0f, 0.0f,
+         0.5f,  0.5f,   1.0f, 1.0f,
+        -0.5f,  0.5f,   0.0f, 1.0f
     };
 
     unsigned int indices[6] = {
@@ -132,16 +136,22 @@ int main(void)
     glGenVertexArrays(1, &vertexArrayObject);
     glBindVertexArray(vertexArrayObject);
 
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
     IndexBuffer indexBuffer(indices, 6);
 
     //TODO: The paths are relative to the project root when running inside VS, might not work in standalone
     Shader shader("..\\assets\\shaders\\vert.glsl", "..\\assets\\shaders\\frag.glsl");
     shader.Bind();
+
+    Texture texture("..\\assets\\textures\\test.png");
+    texture.Bind();
+    shader.SetUniformInteger("u_Texture", 0);
 
     float r = 0.0f;
     float increment = 0.035f;
