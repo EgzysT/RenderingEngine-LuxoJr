@@ -40,6 +40,7 @@ Shader::Shader(const std::string& vertFilePath, const std::string& fragFilePath)
 
 Shader::~Shader()
 {
+    
 }
 
 void Shader::Bind() const
@@ -93,7 +94,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
     if (result == GL_FALSE) {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
+        char* message = (char*)_malloca(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
 
         std::cout << "Failed to compile " <<
@@ -120,4 +121,9 @@ void Shader::SetUniformFloat(const std::string& name, float value)
 void Shader::SetUniformInteger(const std::string& name, int value)
 {
     glUniform1i(getUniformLocation(name), value);
+}
+
+void Shader::SetUniformMatrix4(const std::string& name, glm::mat4 matrix)
+{
+    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }

@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define PI 3.14159265359
+
 // Should be used to leave the application with an error message
 #define ERROR_EXIT(err) \
         { \
@@ -16,6 +18,10 @@
                 return EXIT_FAILURE; \
         }
 
+static double DegToRad(double degree)
+{
+    return (degree * (PI / 180));
+}
 
 /*
     DEBUGGING METHOD #1 : Callback - OpenGL should callback whenever one of the error flags are raised.
@@ -120,6 +126,7 @@ static std::string FormatDebugOutput(GLenum source, GLenum type, GLuint id, GLen
 static void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
     GLsizei length, const GLchar* message, const GLvoid* userParam)
 {
+    if (id == 131185) return;
     std::string error = FormatDebugOutput(source, type, id, severity, message);
     std::cout << error << std::endl;
     //__debugbreak();

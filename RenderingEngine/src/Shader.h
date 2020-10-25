@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <GLM/glm.hpp>
+
 class Shader
 {
 private:
@@ -28,5 +30,6 @@ public:
 	void SetUniformVec4(const std::string& name, float v0, float v1, float v2, float v3);
 	void SetUniformFloat(const std::string& name, float value);
 	void SetUniformInteger(const std::string& name, int value);
+	void SetUniformMatrix4(const std::string& name, glm::mat4 matrix);
 };
 
