@@ -9,7 +9,7 @@ IndexBuffer::IndexBuffer(const GLuint* data, unsigned int count) : count(count)
 
 IndexBuffer::~IndexBuffer()
 {
-    
+    glDeleteBuffers(1, &rendererID);
 }
 
 void IndexBuffer::Bind() const

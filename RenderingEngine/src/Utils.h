@@ -2,10 +2,15 @@
 
 
 #include <iostream>
+#include <sstream>
 #include <Windows.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtx/euler_angles.hpp>
 
 #define PI 3.14159265359
 
@@ -21,6 +26,10 @@
 static double DegToRad(double degree)
 {
     return (degree * (PI / 180));
+}
+
+static glm::mat4 RotMat4(double angleX, double angleY, double angleZ) {
+    return glm::yawPitchRoll(DegToRad(angleY), DegToRad(angleX), DegToRad(angleZ));
 }
 
 /*

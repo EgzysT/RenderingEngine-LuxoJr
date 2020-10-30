@@ -3,6 +3,7 @@
 #include <stb_image.h>
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtx/euler_angles.hpp>
 
 
 #include <iostream>
@@ -93,6 +94,11 @@ int Application::Init()
 
 int Application::DebugTemp()
 {
+    mesh = Mesh{};
+    mesh.LoadMesh("..\\assets\\models\\barrel\\barrel.fbx");
+    //mesh.LoadMesh("..\\assets\\models\\TrashCan\\trashcan.fbx");
+    //mesh.LoadMesh("..\\assets\\models\\rocks\\RockSet.obj");
+
     float vertices[] = {
         //positions          //texture coords
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
@@ -130,11 +136,12 @@ int Application::DebugTemp()
     activeTexture->Bind();
     activeShader->SetUniformInteger("u_Texture", 0);
 
-    glm::mat4 proj = glm::perspective(DegToRad(90), (double)(width / height), 0.01, 100.0);
-    //glm::mat4 proj = glm::ortho(-2.0, 2.0, -1.125, 1.125, -1.0, 1.0);
-    glm::mat4 view = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -1.0));
-    glm::mat4 model = glm::mat4(1.0);
-    glm::mat4 mvpMatrix = proj * view * model;
+    camera = std::make_unique<Camera>(90, width, height, 0.01, 1000.0);
+    //glm::mat4 model = glm::mat4(1.0);
+    //glm::mat4 model = RotMat4(15.0, 30.0, 5.0);
+    glm::mat4 model = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.9));
+    //glm::mat4 mvpMatrix = proj * view * model;
+    glm::mat4 mvpMatrix = camera->getViewProjMatrix() * model;
 
     activeShader->SetUniformMatrix4("u_MVP", mvpMatrix);
 
@@ -149,14 +156,15 @@ int Application::Run()
     unsigned int frameCount = 0;
     unsigned long long beginClock;
     unsigned long long endClock;
+    glEnable(GL_DEPTH_TEST);
 
     beginClock = GetTickCount64();
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        (*activeShader).SetUniformVec4("u_Color", r, 0.3f, 0.8f, 1.0f);
+        //activeShader->SetUniformVec4("u_Color", r, 0.3f, 0.8f, 1.0f);
 
         activeShader->Bind();
         activeVB->Bind();
@@ -165,7 +173,8 @@ int Application::Run()
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
         activeIB->Bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        activeTexture->Bind();
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         if (r < 0.0f) {
             increment = 0.035f;
@@ -174,6 +183,8 @@ int Application::Run()
             increment = -0.035f;
         }
         r += increment;
+
+        mesh.Render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

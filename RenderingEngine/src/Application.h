@@ -9,6 +9,8 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
+#include "Mesh.h"
 
 class Application
 {
@@ -18,6 +20,7 @@ private:
 	static std::unique_ptr<Application> instance;
 	//std::unique_ptr<GLFWwindow> window;
 	GLFWwindow* window;
+	std::unique_ptr<Camera> camera;
 	std::unique_ptr<Shader> activeShader;
 	std::unique_ptr<VertexBuffer> activeVB;
 	std::unique_ptr<IndexBuffer> activeIB;
@@ -26,6 +29,7 @@ private:
 	int height;
 	float r;
 	float increment;
+	Mesh mesh;
 public:
 	Application() {}
 	int Init();		// Initialization
