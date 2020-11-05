@@ -5,14 +5,21 @@
 class Camera
 {
 private:
-	glm::vec3 position;
-	glm::mat4 viewMatrix;
+	glm::vec3 eye;
+	glm::vec3 center;
+	const glm::vec3 up;
+	const double fov;
+	const double aspect;
 	glm::mat4 projMatrix;
 
-	bool dirty;
+	// bool dirty;
 public:
-	Camera(double fovAngle, int width, int height, double zNear, double zFar);
+	Camera(double fovAngle, double aspect, double zNear, double zFar);
+	Camera(double fovy, double aspect, double zNear, double zFar, glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 	~Camera();
+	void rotate(double xoffset, double yoffset);
+	void dolly(double offset);
+    void pan(double xoffset, double yoffset);
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjMatrix() const;
 	glm::mat4 getViewProjMatrix() const;

@@ -18,10 +18,60 @@
 
 std::unique_ptr<Application> Application::instance;
 
+static void error_callback(int error, const char* description) {
+    fprintf(stderr, "Error: %s\n", description);
+}
+
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    auto win = (application_window*)glfwGetWindowUserPointer(window);
+
+    if (win->mouse_left) {
+        auto xoffset = ((double)xpos - win->lastx) / win->width;
+        auto yoffset = ((double)ypos - win->lasty) / win->height;
+        win->lastx = xpos;
+        win->lasty = ypos;
+
+        win->camera->rotate(xoffset, yoffset);
+    }
+    if (win->mouse_right) {
+        auto xoffset = ((double)xpos - win->lastx) / win->width;
+        auto yoffset = ((double)ypos - win->lasty) / win->height;
+        win->lastx = xpos;
+        win->lasty = ypos;
+
+        win->camera->pan(xoffset, yoffset);
+    }
+}
+
+
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    auto win = (application_window*)glfwGetWindowUserPointer(window);
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        win->mouse_left = true;
+        glfwGetCursorPos(window, &win->lastx, &win->lasty);
+    }
+    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        win->mouse_left = false;
+    }
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+        win->mouse_right = true;
+        glfwGetCursorPos(window, &win->lastx, &win->lasty);
+    }
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+        win->mouse_right = false;
+    }
+}
+
+static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    auto win = (application_window*)glfwGetWindowUserPointer(window);
+    win->camera->dolly(yoffset / 10);
 }
 
 Application* Application::GetInstance()
@@ -35,6 +85,8 @@ Application* Application::GetInstance()
 
 int Application::Init()
 {
+    glfwSetErrorCallback(error_callback);
+
     /* Initialize the library */
     if (!glfwInit())
         ERROR_EXIT("Failed to initialize GLFW");
@@ -88,6 +140,14 @@ int Application::Init()
         INPUT
     */
     glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
+    glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+
+    app_window = application_window{width, height};
+    glfwSetWindowUserPointer(window, &app_window);
 
     return 0;
 }
@@ -136,14 +196,15 @@ int Application::DebugTemp()
     activeTexture->Bind();
     activeShader->SetUniformInteger("u_Texture", 0);
 
-    camera = std::make_unique<Camera>(90, width, height, 0.01, 1000.0);
+    camera = std::make_unique<Camera>(glm::radians(90.0), (double)width / height, 0.01, 1000.0);
+    app_window.camera = camera.get();
     //glm::mat4 model = glm::mat4(1.0);
     //glm::mat4 model = RotMat4(15.0, 30.0, 5.0);
     glm::mat4 model = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.9));
     //glm::mat4 mvpMatrix = proj * view * model;
-    glm::mat4 mvpMatrix = camera->getViewProjMatrix() * model;
+    //glm::mat4 mvpMatrix = camera->getViewProjMatrix() * model;
 
-    activeShader->SetUniformMatrix4("u_MVP", mvpMatrix);
+    activeShader->SetUniformMatrix4("u_modelMatrix", model);
 
     r = 0.0f;
     increment = 0.035f;
@@ -164,7 +225,7 @@ int Application::Run()
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //activeShader->SetUniformVec4("u_Color", r, 0.3f, 0.8f, 1.0f);
+        activeShader->SetUniformMatrix4("u_ViewProjMatrix", camera->getViewProjMatrix());
 
         activeShader->Bind();
         activeVB->Bind();

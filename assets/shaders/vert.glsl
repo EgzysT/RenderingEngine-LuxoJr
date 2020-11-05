@@ -6,9 +6,10 @@ layout(location = 2) in vec2 normals;
 
 out vec2 v_TexCoord;
 
-uniform mat4 u_MVP;
+uniform mat4 u_ViewProjMatrix;
+uniform mat4 u_modelMatrix;
 
 void main() {
-    gl_Position = u_MVP * position;
+    gl_Position = u_ViewProjMatrix * u_modelMatrix * position;
     v_TexCoord = texCoords;
 }
