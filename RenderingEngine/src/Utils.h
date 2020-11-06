@@ -23,13 +23,8 @@
                 return EXIT_FAILURE; \
         }
 
-static double DegToRad(double degree)
-{
-    return (degree * (PI / 180));
-}
-
 static glm::mat4 RotMat4(double angleX, double angleY, double angleZ) {
-    return glm::yawPitchRoll(DegToRad(angleY), DegToRad(angleX), DegToRad(angleZ));
+    return glm::yawPitchRoll(glm::radians(angleY), glm::radians(angleX), glm::radians(angleZ));
 }
 
 /*

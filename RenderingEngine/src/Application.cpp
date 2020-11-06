@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include "Utils.h"
+#include "Light.h"
 
 std::unique_ptr<Application> Application::instance;
 
@@ -157,7 +158,7 @@ int Application::DebugTemp()
     mesh = Mesh{};
     mesh.LoadMesh("..\\assets\\models\\barrel\\barrel.fbx");
     //mesh.LoadMesh("..\\assets\\models\\TrashCan\\trashcan.fbx");
-    //mesh.LoadMesh("..\\assets\\models\\rocks\\RockSet.obj");
+    //mesh.LoadMesh("..\\assets\\models\\rocks\\RockSet.obj");    
 
     float vertices[] = {
         //positions          //texture coords
@@ -172,8 +173,6 @@ int Application::DebugTemp()
         2, 3, 0
     };
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     unsigned int vertexArrayObject;
     glGenVertexArrays(1, &vertexArrayObject);
@@ -189,7 +188,7 @@ int Application::DebugTemp()
     activeIB = std::make_unique<IndexBuffer>(indices, 6);
 
     //TODO: The paths are relative to the project root when running inside VS, might not work in standalone
-    activeShader = std::make_unique<Shader>("..\\assets\\shaders\\vert.glsl", "..\\assets\\shaders\\frag.glsl");
+    activeShader = std::make_shared<Shader>("..\\assets\\shaders\\vert.glsl", "..\\assets\\shaders\\frag.glsl");
     activeShader->Bind();
 
     activeTexture = std::make_unique<Texture>("..\\assets\\textures\\test.png");
@@ -206,6 +205,9 @@ int Application::DebugTemp()
 
     activeShader->SetUniformMatrix4("u_modelMatrix", model);
 
+    activeShader->SetUniformFloat("u_matSpecular", 0.9);
+    activeShader->SetUniformFloat("u_matShininess", 5);
+
     r = 0.0f;
     increment = 0.035f;
 
@@ -214,19 +216,47 @@ int Application::DebugTemp()
 
 int Application::Run()
 {
+    Light light1 = Light(0);
+    light1.SetPosition(1.0, 0.0, 0.0);
+    light1.SetAmbient(0.02, 0.02, 0.02);
+    //light1.SetAmbient(0.2, 0.95, 0.91);
+    light1.SetDiffuse(0.2, 0.2, 0.2);
+    light1.SetSpecular(0.2, 0.2, 0.2);
+    light1.SetAttenuations(1.0, 0.14, 0.07);
+    light1.UpdateShader(activeShader);
+
+    Light light2 = Light(1);
+    light2.SetPosition(-0.2, -0.2, -0.8);
+    light2.SetAmbient(0.02, 0.02, 0.02); 
+    //light2.SetAmbient(0.2, 0.95, 0.91);
+    light2.SetDiffuse(1.0, 1.0, 1.0);
+    light2.SetSpecular(0.0, 0.0, 0.0);
+    light2.SetAttenuations(1.0, 0.14, 0.07);
+    light2.UpdateShader(activeShader);
+
     unsigned int frameCount = 0;
     unsigned long long beginClock;
     unsigned long long endClock;
-    glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    double deltaTime = 0.0f;
+    double lastTime = 0.0f;
     beginClock = GetTickCount64();
     while (!glfwWindowShouldClose(window))
     {
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         activeShader->SetUniformMatrix4("u_ViewProjMatrix", camera->getViewProjMatrix());
-
+        glm::mat4 model = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.9));
+        glm::mat4 normalMatrix = glm::transpose(glm::inverse(camera->getViewMatrix() * model));
+        activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
         activeShader->Bind();
         activeVB->Bind();
         glEnableVertexAttribArray(0);
@@ -254,6 +284,9 @@ int Application::Run()
         glfwPollEvents();
 
         endClock = GetTickCount64();
+        double time = glfwGetTime();
+        deltaTime = time - lastTime;
+        lastTime = time;
         frameCount++;
         //std::cout << (endClock - beginClock) << std::endl;
         if (endClock - beginClock >= 1000) {

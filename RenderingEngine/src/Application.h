@@ -32,7 +32,7 @@ private:
 	GLFWwindow* window;
 	application_window app_window;
 	std::unique_ptr<Camera> camera;
-	std::unique_ptr<Shader> activeShader;
+	std::shared_ptr<Shader> activeShader;
 	std::unique_ptr<VertexBuffer> activeVB;
 	std::unique_ptr<IndexBuffer> activeIB;
 	std::unique_ptr<Texture> activeTexture;
