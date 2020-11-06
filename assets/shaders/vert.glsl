@@ -21,25 +21,30 @@ uniform lightProperties uLight[NUM_LIGHTS];
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_EyeVec;
+out vec3 v_LightDir[NUM_LIGHTS];
 
-uniform mat4 u_ViewProjMatrix;
-uniform mat4 u_modelMatrix;
+// uniform mat4 u_ViewProjMatrix;
+// uniform mat4 u_modelMatrix;
+uniform mat4 u_ModelViewMatrix;
+uniform mat4 u_ProjMatrix;
 uniform mat4 u_NormalMatrix; //transpose(inverse(view * model)) DO IN CPU
 
 void main() {
-    vec4 vertPos = u_ViewProjMatrix * u_modelMatrix * position;
-    v_TexCoord = texCoords;
+    // vec4 vertPos = u_ViewProjMatrix * u_modelMatrix * position;
+    vec4 vertPos = u_ModelViewMatrix * position;
+    
+    v_EyeVec = -vec3(vertPos.xyz);
+    
+    gl_Position = u_ProjMatrix * vertPos;
 
     v_Normal = vec3(u_NormalMatrix * vec4(normals, 1.0));
     // v_Normal = normals;
 
-    v_EyeVec = -vec3(vertPos.xyz);
-    
-    gl_Position = vertPos;
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        if (uLight[i].position.w == 1.0) {
+            v_LightDir[i] = (u_ModelViewMatrix * position).xyz - uLight[i].position.xyz;
+        }
+    }
 
-    // for (int i = 0; i < NUM_LIGHTS; i++) {
-        // if (uLight[i].position.w == 1.0) {
-            // vLightDir[i] = (uMVMatrix * vec4(aVertexPosition, 1.0)).xyz - uLight[i].position.xyz;
-        // }
-    // }
+    v_TexCoord = texCoords;
 }

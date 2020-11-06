@@ -4,6 +4,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtx/euler_angles.hpp>
+#include <GLM/gtc/matrix_inverse.hpp>
 
 
 #include <iostream>
@@ -206,7 +207,7 @@ int Application::DebugTemp()
     activeShader->SetUniformMatrix4("u_modelMatrix", model);
 
     activeShader->SetUniformFloat("u_matSpecular", 0.9);
-    activeShader->SetUniformFloat("u_matShininess", 5);
+    activeShader->SetUniformFloat("u_matShininess", 15);
 
     r = 0.0f;
     increment = 0.035f;
@@ -216,8 +217,8 @@ int Application::DebugTemp()
 
 int Application::Run()
 {
-    Light light1 = Light(0);
-    light1.SetPosition(1.0, 0.0, 0.0);
+    DirectionalLight light1 = DirectionalLight(0);
+    light1.SetDirection(1.0, 0.0, 0.0);
     light1.SetAmbient(0.02, 0.02, 0.02);
     //light1.SetAmbient(0.2, 0.95, 0.91);
     light1.SetDiffuse(0.2, 0.2, 0.2);
@@ -225,14 +226,34 @@ int Application::Run()
     light1.SetAttenuations(1.0, 0.14, 0.07);
     light1.UpdateShader(activeShader);
 
-    Light light2 = Light(1);
-    light2.SetPosition(-0.2, -0.2, -0.8);
+    DirectionalLight light2 = DirectionalLight(1);
+    light2.SetDirection(-0.2, -0.2, -0.8);
     light2.SetAmbient(0.02, 0.02, 0.02); 
     //light2.SetAmbient(0.2, 0.95, 0.91);
     light2.SetDiffuse(1.0, 1.0, 1.0);
-    light2.SetSpecular(0.0, 0.0, 0.0);
+    light2.SetSpecular(1.0, 1.0, 1.0);
+    //light2.SetSpecular(0.0, 0.0, 0.0);
     light2.SetAttenuations(1.0, 0.14, 0.07);
     light2.UpdateShader(activeShader);
+
+    //PointLight light1 = PointLight(0);
+    //light1.SetPosition(2.0, 0.0, 0.0);
+    //light1.SetAmbient(0.02, 0.02, 0.02);
+    ////light1.SetAmbient(0.2, 0.95, 0.91);
+    //light1.SetDiffuse(0.2, 0.2, 0.2);
+    //light1.SetSpecular(0.2, 0.2, 0.2);
+    //light1.SetAttenuations(1.0, 0.14, 0.07);
+    //light1.UpdateShader(activeShader);
+
+    //PointLight light2 = PointLight(1);
+    //light2.SetPosition(-0.4, -0.4, -1.8);
+    //light2.SetAmbient(0.02, 0.02, 0.02);
+    ////light2.SetAmbient(0.2, 0.95, 0.91);
+    //light2.SetDiffuse(1.0, 1.0, 1.0);
+    ////light2.SetSpecular(1.0, 1.0, 1.0);
+    //light2.SetSpecular(0.0, 0.0, 0.0);
+    //light2.SetAttenuations(1.0, 0.14, 0.07);
+    //light2.UpdateShader(activeShader);
 
     unsigned int frameCount = 0;
     unsigned long long beginClock;
@@ -253,9 +274,12 @@ int Application::Run()
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        activeShader->SetUniformMatrix4("u_ViewProjMatrix", camera->getViewProjMatrix());
+        //activeShader->SetUniformMatrix4("u_ViewProjMatrix", camera->getViewProjMatrix());
         glm::mat4 model = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.9));
-        glm::mat4 normalMatrix = glm::transpose(glm::inverse(camera->getViewMatrix() * model));
+        glm::mat4 modelViewMatrix = camera->getViewMatrix() * model;
+        glm::mat4 normalMatrix = glm::inverseTranspose(camera->getViewMatrix() * model); // similar to transpose(inverse())
+        activeShader->SetUniformMatrix4("u_ModelViewMatrix", modelViewMatrix);
+        activeShader->SetUniformMatrix4("u_ProjMatrix", camera->getProjMatrix());
         activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
         activeShader->Bind();
         activeVB->Bind();

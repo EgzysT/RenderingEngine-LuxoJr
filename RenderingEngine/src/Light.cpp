@@ -2,9 +2,9 @@
 
 //#include <string>
 
-Light::Light(unsigned int lightNum) : lightNum(lightNum)
+Light::Light(unsigned int lightNum, float w) : lightNum(lightNum)
 {
-	position = glm::vec3{ 0.0 };
+	posDir = glm::vec4{ 0.0, 0.0, 0.0, w };
 	ambient = glm::vec3{ 0.0, 0.0, 0.0 };
 	diffuse = glm::vec3{ 1.0, 1.0, 1.0 };
 	specular = glm::vec3{ 1.0, 1.0, 1.0 };
@@ -18,11 +18,12 @@ Light::~Light()
 {
 }
 
-void Light::SetPosition(float x, float y, float z)
+void Light::SetPosDir(float x, float y, float z, float w)
 {
-	position.x = x;
-	position.y = y;
-	position.z = z;
+	posDir.x = x;
+	posDir.y = y;
+	posDir.z = z;
+	posDir.w = w;
 }
 
 void Light::SetAmbient(float r, float g, float b)
@@ -56,7 +57,7 @@ void Light::SetAttenuations(float constant, float linear, float quadratic)
 void Light::UpdateShader(std::shared_ptr<Shader> activeShader)
 {
 	std::string str = "uLight[" + std::to_string(lightNum) + "]";
-	activeShader->SetUniformVec4(str + ".position", position.x, position.y, position.z, 0.0f);
+	activeShader->SetUniformVec4(str + ".position", posDir.x, posDir.y, posDir.z, posDir.w);
 	activeShader->SetUniformVec4(str + ".ambient", ambient.r, ambient.g, ambient.b, 1.0f);
 	activeShader->SetUniformVec4(str + ".diffuse", diffuse.r, diffuse.g, diffuse.b, 1.0f);
 	activeShader->SetUniformVec4(str + ".specular", specular.r, specular.g, specular.b, 1.0f);
