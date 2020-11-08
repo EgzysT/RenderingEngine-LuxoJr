@@ -6,6 +6,7 @@ layout(location = 0) out vec4 color;
 in vec2 v_TexCoord;
 in vec3 v_Normal;
 in vec3 v_EyeVec;
+in vec3 v_LightDir[NUM_LIGHTS];
 
 uniform vec4 u_Color;
 uniform sampler2D u_Texture;
@@ -43,6 +44,17 @@ vec4 calcDirectionalLight(int i, vec3 eyeVec, vec3 lightDir, vec3 normal, vec4 t
     return texColor * (ambientColor + diffuseColor) + specularColor;
 }
 
+vec4 calcPointLight(int i, vec3 eyeVec, vec3 normal, vec4 texColor) {
+    float dist = length(v_LightDir[i]);
+    vec3 dir = normalize(v_LightDir[i]);
+
+    vec4 color = calcDirectionalLight(i, eyeVec, dir, normal, texColor);
+    float att = uLight[i].constant_attenuation + 
+                uLight[i].linear_attenuation * dist + 
+                uLight[i].quadratic_attenuation * dist * dist;
+    return color / att;
+}
+
 vec4 lighting(vec3 eyeVec, vec3 normal) {
 // vec4 lighting() {
     vec4 texColor = texture(u_Texture, v_TexCoord);
@@ -50,8 +62,13 @@ vec4 lighting(vec3 eyeVec, vec3 normal) {
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
         // result += uLight[i].ambient;
-
-        result += calcDirectionalLight(i, eyeVec, normalize(uLight[i].position.xyz), normal, texColor);
+        if (uLight[i].position.w == 0.0) {
+            // Directional Light
+            result += calcDirectionalLight(i, eyeVec, normalize(uLight[i].position.xyz), normal, texColor);
+        } else {
+            // Point Light
+            result += calcPointLight(i, eyeVec, normal, texColor);
+        }
     }
 
     result.a = 1.0;
@@ -64,10 +81,8 @@ void main() {
 	vec3 normal = normalize(v_Normal);
     vec3 eyeVec = normalize(v_EyeVec);
 
-    vec4 illumColor = lighting(eyeVec, normal);
-    // vec4 illumColor = lighting();
     // color = texColor * u_Color;
     // color = texColor;
-    color = illumColor;
+    color = lighting(eyeVec, normal);
     // color = vec4(v_Normal, 1.0);
 }

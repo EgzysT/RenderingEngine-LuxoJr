@@ -26,7 +26,7 @@ public:
 	void SetDiffuse(float r, float g, float b);
 	void SetSpecular(float r, float g, float b);
 	void SetAttenuations(float constant, float linear, float quadratic);
-	void UpdateShader(std::shared_ptr<Shader> activeShader);
+	void UpdateShader(std::shared_ptr<Shader> activeShader, glm::mat4 viewMatrix);
 };
 
 class PointLight : public Light {

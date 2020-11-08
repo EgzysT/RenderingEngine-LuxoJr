@@ -217,27 +217,8 @@ int Application::DebugTemp()
 
 int Application::Run()
 {
-    DirectionalLight light1 = DirectionalLight(0);
-    light1.SetDirection(1.0, 0.0, 0.0);
-    light1.SetAmbient(0.02, 0.02, 0.02);
-    //light1.SetAmbient(0.2, 0.95, 0.91);
-    light1.SetDiffuse(0.2, 0.2, 0.2);
-    light1.SetSpecular(0.2, 0.2, 0.2);
-    light1.SetAttenuations(1.0, 0.14, 0.07);
-    light1.UpdateShader(activeShader);
-
-    DirectionalLight light2 = DirectionalLight(1);
-    light2.SetDirection(-0.2, -0.2, -0.8);
-    light2.SetAmbient(0.02, 0.02, 0.02); 
-    //light2.SetAmbient(0.2, 0.95, 0.91);
-    light2.SetDiffuse(1.0, 1.0, 1.0);
-    light2.SetSpecular(1.0, 1.0, 1.0);
-    //light2.SetSpecular(0.0, 0.0, 0.0);
-    light2.SetAttenuations(1.0, 0.14, 0.07);
-    light2.UpdateShader(activeShader);
-
-    //PointLight light1 = PointLight(0);
-    //light1.SetPosition(2.0, 0.0, 0.0);
+    //DirectionalLight light1 = DirectionalLight(0);
+    //light1.SetDirection(1.0, 0.0, 0.0);
     //light1.SetAmbient(0.02, 0.02, 0.02);
     ////light1.SetAmbient(0.2, 0.95, 0.91);
     //light1.SetDiffuse(0.2, 0.2, 0.2);
@@ -245,14 +226,34 @@ int Application::Run()
     //light1.SetAttenuations(1.0, 0.14, 0.07);
     //light1.UpdateShader(activeShader);
 
-    //PointLight light2 = PointLight(1);
-    //light2.SetPosition(-0.4, -0.4, -1.8);
-    //light2.SetAmbient(0.02, 0.02, 0.02);
+    //DirectionalLight light2 = DirectionalLight(1);
+    //light2.SetDirection(-0.2, -0.2, -0.8);
+    //light2.SetAmbient(0.02, 0.02, 0.02); 
     ////light2.SetAmbient(0.2, 0.95, 0.91);
     //light2.SetDiffuse(1.0, 1.0, 1.0);
-    ////light2.SetSpecular(1.0, 1.0, 1.0);
-    //light2.SetSpecular(0.0, 0.0, 0.0);
+    //light2.SetSpecular(1.0, 1.0, 1.0);
+    ////light2.SetSpecular(0.0, 0.0, 0.0);
     //light2.SetAttenuations(1.0, 0.14, 0.07);
+    //light2.UpdateShader(activeShader);
+
+    PointLight light1 = PointLight(0);
+    light1.SetPosition(3.8, 0.0, 0.0);
+    light1.SetAmbient(0.02, 0.02, 0.02);
+    //light1.SetAmbient(0.2, 0.95, 0.91);
+    //light1.SetDiffuse(0.2, 0.2, 0.2);
+    light1.SetDiffuse(1.0, 1.0, 1.0);
+    light1.SetSpecular(0.0, 0.0, 0.0);
+    light1.SetAttenuations(1.0, 0.14, 0.07);
+    //light1.UpdateShader(activeShader);
+
+    PointLight light2 = PointLight(1);
+    light2.SetPosition(-2.4, -1.4, -3.0);
+    light2.SetAmbient(0.02, 0.02, 0.02);
+    //light2.SetAmbient(0.2, 0.95, 0.91);
+    light2.SetDiffuse(1.0, 1.0, 1.0);
+    light2.SetSpecular(1.0, 1.0, 1.0);
+    //light2.SetSpecular(0.0, 0.0, 0.0);
+    light2.SetAttenuations(1.0, 0.14, 0.07);
     //light2.UpdateShader(activeShader);
 
     unsigned int frameCount = 0;
@@ -275,12 +276,15 @@ int Application::Run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //activeShader->SetUniformMatrix4("u_ViewProjMatrix", camera->getViewProjMatrix());
+        glm::mat4 view = camera->getViewMatrix();
         glm::mat4 model = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.9));
-        glm::mat4 modelViewMatrix = camera->getViewMatrix() * model;
-        glm::mat4 normalMatrix = glm::inverseTranspose(camera->getViewMatrix() * model); // similar to transpose(inverse())
+        glm::mat4 modelViewMatrix = view * model;
+        glm::mat4 normalMatrix = glm::inverseTranspose(view * model); // similar to transpose(inverse())
         activeShader->SetUniformMatrix4("u_ModelViewMatrix", modelViewMatrix);
         activeShader->SetUniformMatrix4("u_ProjMatrix", camera->getProjMatrix());
         activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
+        light1.UpdateShader(activeShader, view);
+        light2.UpdateShader(activeShader, view);
         activeShader->Bind();
         activeVB->Bind();
         glEnableVertexAttribArray(0);
