@@ -20,10 +20,6 @@
 
 std::unique_ptr<Application> Application::instance;
 
-static void error_callback(int error, const char* description) {
-    fprintf(stderr, "Error: %s\n", description);
-}
-
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -87,7 +83,7 @@ Application* Application::GetInstance()
 
 int Application::Init()
 {
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(glfwDebugCallback);
 
     /* Initialize the library */
     if (!glfwInit())
@@ -151,6 +147,9 @@ int Application::Init()
     app_window = application_window{width, height};
     glfwSetWindowUserPointer(window, &app_window);
 
+    camera = std::make_unique<Camera>(glm::radians(90.0), (double)width / height, 0.01, 1000.0);
+    //graphics = Graphics{camera, activeShader};
+
     return 0;
 }
 
@@ -196,7 +195,6 @@ int Application::DebugTemp()
     activeTexture->Bind();
     activeShader->SetUniformInteger("u_Texture", 0);
 
-    camera = std::make_unique<Camera>(glm::radians(90.0), (double)width / height, 0.01, 1000.0);
     app_window.camera = camera.get();
     //glm::mat4 model = glm::mat4(1.0);
     //glm::mat4 model = RotMat4(15.0, 30.0, 5.0);

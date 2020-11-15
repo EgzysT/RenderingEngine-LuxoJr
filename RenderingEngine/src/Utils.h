@@ -27,6 +27,10 @@ static glm::mat4 RotMat4(double angleX, double angleY, double angleZ) {
     return glm::yawPitchRoll(glm::radians(angleY), glm::radians(angleX), glm::radians(angleZ));
 }
 
+static void glfwDebugCallback(int error, const char* description) {
+    fprintf(stderr, "Error: %s\n", description);
+}
+
 /*
     DEBUGGING METHOD #1 : Callback - OpenGL should callback whenever one of the error flags are raised.
     Already implemented, should trigger wherever something breaks in opengl

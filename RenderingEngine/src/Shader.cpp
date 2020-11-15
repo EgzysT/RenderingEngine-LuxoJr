@@ -5,7 +5,7 @@
 #include <sstream>
 #include <filesystem>
 
-#include "Utils.h"
+//#include "Utils.h"
 
 Shader::Shader(const std::string& vertFilePath, const std::string& fragFilePath)
 	: vertFilePath(vertFilePath), fragFilePath(fragFilePath), rendererID(0)

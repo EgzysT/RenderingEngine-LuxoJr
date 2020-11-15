@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "Graphics.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
@@ -30,6 +31,7 @@ private:
 	static std::unique_ptr<Application> instance;
 	//std::unique_ptr<GLFWwindow> window;
 	GLFWwindow* window;
+	//Graphics graphics;
 	application_window app_window;
 	std::unique_ptr<Camera> camera;
 	std::shared_ptr<Shader> activeShader;
