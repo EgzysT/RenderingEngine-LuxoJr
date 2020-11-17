@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\RenderItem.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\RenderItem.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Mesh.h" />
@@ -160,6 +162,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\stb_image\include;$(SolutionDir)Dependencies\GLM\include;$(SolutionDir)Dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

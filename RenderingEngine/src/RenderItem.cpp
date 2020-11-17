@@ -17,4 +17,5 @@ void RenderItem::Render()
 	glm::mat4 normalMatrix = glm::inverseTranspose(modelViewMatrix); // similar to transpose(inverse())
 	graphics->activeShader->SetUniformMatrix4("u_ModelViewMatrix", modelViewMatrix);
 	graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
+	mesh.Render();
 }

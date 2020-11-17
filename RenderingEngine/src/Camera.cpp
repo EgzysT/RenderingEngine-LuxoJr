@@ -10,7 +10,11 @@ Camera::Camera(double fovy, double aspect, double zNear, double zFar) :
 	projMatrix(glm::perspective(fovy, aspect, zNear, zFar)),
 	eye(glm::vec3(0.0f, 0.0f, 4.0f)),
 	center(glm::vec3()),
-	up(glm::vec3(0.0f, 1.0f, 0.0f)) {};
+	up(glm::vec3(0.0f, 1.0f, 0.0f)),
+	dirty(true) 
+{
+	viewMatrix = glm::lookAt(eye, center, up);
+};
 
 Camera::Camera(double fovy, double aspect, double zNear, double zFar, glm::vec3 eye, glm::vec3 center, glm::vec3 up) :
 	fov(fovy),
@@ -18,7 +22,12 @@ Camera::Camera(double fovy, double aspect, double zNear, double zFar, glm::vec3 
 	projMatrix(glm::perspective(fovy, aspect, zNear, zFar)),
 	eye(eye),
 	center(center),
-	up(up) {};
+	up(up),
+	dirty(true),
+	viewMatrix(glm::lookAt(eye, center, up)) 
+{
+	viewMatrix = glm::lookAt(eye, center, up);
+};
 
 Camera::~Camera()
 {
@@ -42,6 +51,7 @@ void Camera::rotate(double xoffset, double yoffset) {
 	auto z = glm::sin(theta) * glm::sin(phi) * radius;
 
 	eye = center - glm::vec3(x, y, z);
+	dirty = true;
 }
 
 void Camera::dolly(double offset) {
@@ -49,6 +59,7 @@ void Camera::dolly(double offset) {
 	auto radius = glm::max(0.001, glm::length(center - eye) * (1 - offset));
 
 	eye = center - (float)radius * direction;
+	dirty = true;
 }
 
 void Camera::pan(double xoffset, double yoffset) {
@@ -68,11 +79,15 @@ void Camera::pan(double xoffset, double yoffset) {
 
 	eye += t;
 	center += t;
+	dirty = true;
 }
 
-glm::mat4 Camera::getViewMatrix() const
+glm::mat4 Camera::getViewMatrix()
 {
-	return glm::lookAt(eye, center, up);
+	if (dirty) {
+		viewMatrix = glm::lookAt(eye, center, up);
+	}
+	return viewMatrix;
 }
 
 glm::mat4 Camera::getProjMatrix() const
@@ -80,7 +95,7 @@ glm::mat4 Camera::getProjMatrix() const
 	return projMatrix;
 }
 
-glm::mat4 Camera::getViewProjMatrix() const
+glm::mat4 Camera::getViewProjMatrix()
 {
 	return getProjMatrix() * getViewMatrix();
 }
