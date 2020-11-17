@@ -15,7 +15,7 @@ int main(void)
 
     CHECK_RET_ZERO(app->Init())
 
-    CHECK_RET_ZERO(app->DebugTemp())
+    //CHECK_RET_ZERO(app->DebugTemp())
 
     CHECK_RET_ZERO(app->Run()) // MAIN LOOP
 

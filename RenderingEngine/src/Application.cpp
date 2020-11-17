@@ -1,22 +1,8 @@
 #include "Application.h"
 
-#include <stb_image.h>
-#include <GLM/glm.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtx/euler_angles.hpp>
-#include <GLM/gtc/matrix_inverse.hpp>
-
-
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <filesystem>
-
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "Utils.h"
-#include "Light.h"
 
 std::unique_ptr<Application> Application::instance;
 
@@ -37,10 +23,10 @@ int Application::Init()
     if (!glfwInit())
         ERROR_EXIT("Failed to initialize GLFW");
 
-    #if _DEBUG
-        // Create a debug OpenGL context or tell your OpenGL library (GLFW, SDL) to do so.
+#if _DEBUG
+    // Create a debug OpenGL context or tell your OpenGL library (GLFW, SDL) to do so.
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-    #endif
+#endif
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);                  // OpenGL version
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -94,10 +80,10 @@ int Application::Init()
     return 0;
 }
 
-int Application::DebugTemp()
-{
-    return 0;
-}
+//int Application::DebugTemp()
+//{
+//    return 0;
+//}
 
 int Application::Run()
 {
