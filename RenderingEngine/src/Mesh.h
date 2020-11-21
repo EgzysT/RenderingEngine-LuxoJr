@@ -19,11 +19,26 @@ struct Vertex
     glm::vec3 pos;
     glm::vec2 tex;
     glm::vec3 normal;
+    glm::vec3 tangent;
 
     Vertex() {}
-    Vertex(const glm::vec3& pos, const glm::vec2& tex, const glm::vec3& normal)
-        : pos(pos), tex(tex), normal(normal)
+    Vertex(const glm::vec3& pos, const glm::vec2& tex, const glm::vec3& normal, const glm::vec3& tangent)
+        : pos(pos), tex(tex), normal(normal), tangent(tangent)
 	{}
+};
+
+struct Material {
+    std::string name;
+    std::unique_ptr<Texture> diffuseTexture;
+    std::unique_ptr<Texture> normalTexture;
+    void Bind() {
+        if (diffuseTexture) diffuseTexture->Bind();
+        if (normalTexture) normalTexture->Bind();
+    }
+    void Unbind() {
+        if (diffuseTexture) diffuseTexture->Unbind();
+        if (normalTexture) normalTexture->Unbind();
+    }
 };
 
 class Mesh
@@ -40,7 +55,7 @@ private:
         unsigned int matIndex;
     };
     std::vector<MeshEntry> meshEntries;
-    std::vector<Texture*> textures;
+    std::vector<std::shared_ptr<Material>> renderMaterials;
 
 	bool InitMeshFromScene(const aiScene* pScene, const std::string& Filename);
 	void InitMesh(unsigned int Index, const aiMesh* paiMesh);

@@ -14,11 +14,12 @@ private:
 	int width;
 	int height;
 	int bitsPerPixel;
+	unsigned int unit;
 public:
-	Texture(const std::string& filepath);
+	Texture(const std::string& filepath, unsigned int unit);
 	~Texture();
 
-	void Bind(unsigned int unit = 0) const;
+	void Bind() const;
 	void Unbind() const;
 
 	inline int GetWidth() const { return width; }

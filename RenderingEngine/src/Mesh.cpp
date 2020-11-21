@@ -40,13 +40,13 @@ Mesh::~Mesh()
 
 void Mesh::Clear()
 {
-    textures.clear();
+    renderMaterials.clear();
 }
 
 bool Mesh::InitMeshFromScene(const aiScene* scene, const std::string& filepath)
 {
     meshEntries.resize(scene->mNumMeshes);
-    textures.resize(scene->mNumMaterials);
+    renderMaterials.resize(scene->mNumMaterials);
 
     // Initialize the meshes in the scene one by one
     for (unsigned int i = 0; i < meshEntries.size(); i++) {
@@ -71,10 +71,12 @@ void Mesh::InitMesh(unsigned int index, const aiMesh* mesh)
         const aiVector3D* pos = &(mesh->mVertices[i]);
         const aiVector3D* normal = &(mesh->mNormals[i]);
         const aiVector3D* texCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][i]) : &vec3Zero;
+        const aiVector3D* tangent = &(mesh->mTangents[i]);
 
         Vertex vert(glm::vec3(pos->x, pos->y, pos->z),
             glm::vec2(texCoord->x, texCoord->y),
-            glm::vec3(normal->x, normal->y, normal->z));
+            glm::vec3(normal->x, normal->y, normal->z),
+            glm::vec3(tangent->x, tangent->y, tangent->z));
 
         verts.push_back(vert);
     }
@@ -101,6 +103,7 @@ bool Mesh::LoadMesh(const std::string& filepath)
         aiProcess_GenSmoothNormals |
         aiProcess_SplitLargeMeshes |
         aiProcess_JoinIdenticalVertices |
+        aiProcess_ImproveCacheLocality |
         aiProcess_SortByPType);
 
     if (!scene) {
@@ -133,7 +136,11 @@ bool Mesh::InitMaterials(const aiScene* scene, const std::string& filepath)
     for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
         const aiMaterial* mat = scene->mMaterials[i];
 
-        textures[i] = NULL;
+        renderMaterials[i] = std::make_unique<Material>();
+        // Set name
+        aiString name;
+        mat->Get(AI_MATKEY_NAME, name);
+        renderMaterials[i]->name = name.C_Str();
 
         if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
             aiString Path;
@@ -141,7 +148,7 @@ bool Mesh::InitMaterials(const aiScene* scene, const std::string& filepath)
             if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
                 std::cout << Path.C_Str() << std::endl;
                 std::string fullPath = Dir + "\\" + Path.data;
-                textures[i] = new Texture(fullPath.c_str());
+                renderMaterials[i]->diffuseTexture = std::make_unique<Texture>(fullPath.c_str(), 0);
 
                 /*if (!textures[i]->Load()) {
                     printf("Error loading texture '%s'\n", fullPath.c_str());
@@ -155,9 +162,19 @@ bool Mesh::InitMaterials(const aiScene* scene, const std::string& filepath)
             }
         }
 
+        if (mat->GetTextureCount(aiTextureType_NORMALS) > 0) {
+            aiString Path;
+
+            if (mat->GetTexture(aiTextureType_NORMALS, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+                std::cout << Path.C_Str() << std::endl;
+                std::string fullPath = Dir + "\\" + Path.data;
+                renderMaterials[i]->normalTexture = std::make_unique<Texture>(fullPath.c_str(), 1);
+            }
+        }
+
         // Load a white texture in case the model does not include its own texture
-        if (!textures[i]) {
-            textures[i] = new Texture("..\\assets\\textures\\test.png");
+        if (!renderMaterials[i]) {
+            renderMaterials[i]->diffuseTexture = std::make_unique<Texture>("..\\assets\\textures\\test.png", 0);
 
             //Ret = textures[i]->Load();
         }
@@ -171,19 +188,21 @@ void Mesh::Render()
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
 
     for (unsigned int i = 0; i < meshEntries.size(); i++) {
         meshEntries[i].vb->Bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
 
         meshEntries[i].ib->Bind();
 
         const unsigned int MaterialIndex = meshEntries[i].matIndex;
 
-        if (MaterialIndex < textures.size() && textures[MaterialIndex]) {
-            textures[MaterialIndex]->Bind(0);
+        if (MaterialIndex < renderMaterials.size() && renderMaterials[MaterialIndex]) {
+            renderMaterials[MaterialIndex]->Bind();
         }
 
         glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
@@ -192,5 +211,6 @@ void Mesh::Render()
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
 }
 

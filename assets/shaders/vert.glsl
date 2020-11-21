@@ -4,6 +4,7 @@
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoords;
 layout(location = 2) in vec3 normals;
+layout(location = 3) in vec3 tangents;
 
 struct lightProperties {
     vec4 position;                  // Default: (0, 0, 1, 0)
@@ -21,6 +22,7 @@ uniform lightProperties uLight[NUM_LIGHTS];
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_EyeVec;
+out vec3 v_Tangent;
 out vec3 v_LightDir[NUM_LIGHTS];
 
 uniform mat4 u_ModelViewMatrix;
@@ -34,8 +36,8 @@ void main() {
     
     gl_Position = u_ProjMatrix * vertPos;
 
-    v_Normal = vec3(u_NormalMatrix * vec4(normals, 1.0));
-    // v_Normal = normals;
+    v_Normal = vec3(u_NormalMatrix * vec4(normals, 0.0));
+    v_Tangent = vec3(u_NormalMatrix * vec4(tangents, 0.0));
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
         if (uLight[i].position.w == 1.0) {

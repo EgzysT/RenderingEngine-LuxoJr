@@ -6,10 +6,12 @@ layout(location = 0) out vec4 color;
 in vec2 v_TexCoord;
 in vec3 v_Normal;
 in vec3 v_EyeVec;
+in vec3 v_Tangent;
 in vec3 v_LightDir[NUM_LIGHTS];
 
 uniform vec4 u_Color;
 uniform sampler2D u_Texture;
+uniform sampler2D u_NormalMap;
 uniform float u_matSpecular;
 uniform float u_matShininess;
 
@@ -75,10 +77,25 @@ vec4 lighting(vec3 eyeVec, vec3 normal) {
     return result;
 }
 
+vec3 CalcBumpedNormal()
+{
+    vec3 normal = normalize(v_Normal);
+    vec3 tangent = normalize(v_Tangent);
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
+    vec3 bitangent = cross(tangent, normal);
+    vec3 bumpMapNormal = texture(u_NormalMap, v_TexCoord).xyz;
+    bumpMapNormal = 2.0 * bumpMapNormal - vec3(1.0, 1.0, 1.0);
+    vec3 newNormal;
+    mat3 TBN = mat3(tangent, bitangent, normal);
+    newNormal = normalize(TBN * bumpMapNormal);
+    return newNormal;
+}
+
 void main() {
 
     // Transformed normal position
-	vec3 normal = normalize(v_Normal);
+	// vec3 normal = normalize(v_Normal);
+    vec3 normal = CalcBumpedNormal();
     vec3 eyeVec = normalize(v_EyeVec);
 
     // color = texColor * u_Color;

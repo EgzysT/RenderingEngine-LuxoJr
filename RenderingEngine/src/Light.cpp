@@ -9,9 +9,13 @@ Light::Light(unsigned int lightNum, float w) : lightNum(lightNum)
 	diffuse = glm::vec3{ 1.0, 1.0, 1.0 };
 	specular = glm::vec3{ 1.0, 1.0, 1.0 };
 
-	constant = 1.0;
-	linear = 0.14;
-	quadratic = 0.07;
+	constant = 1.0;				// Distance
+	//linear = 0.14;			// 35
+	//quadratic = 0.07;
+	linear = 0.045;				// 100
+	quadratic = 0.0075;
+	//linear = 0.0014;			// 325
+	//quadratic = 0.0007;
 }
 
 Light::~Light()

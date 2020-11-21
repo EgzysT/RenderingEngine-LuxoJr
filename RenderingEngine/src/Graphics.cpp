@@ -50,7 +50,8 @@ void Graphics::InitShader()
     //TODO: The paths are relative to the project root when running inside VS, might not work in standalone
     activeShader = std::make_shared<Shader>("..\\assets\\shaders\\vert.glsl", "..\\assets\\shaders\\frag.glsl");
     activeShader->Bind();
-    activeShader->SetUniformInteger("u_Texture", 0);
+    activeShader->SetUniformInteger("u_Texture", 0); 
+    activeShader->SetUniformInteger("u_NormalMap", 1);
     activeShader->SetUniformFloat("u_matSpecular", 0.9);
     activeShader->SetUniformFloat("u_matShininess", 15);
 
