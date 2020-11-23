@@ -3,25 +3,63 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-//#include "Application.h"
+#include <iostream>
+
 #include "Graphics.h"
 
 class Application;
-struct application_window;
-
 class InputManager
 {
-private:
-
 public:
-	InputManager();
+    static InputManager* GetInstance();
+private:
+    static std::shared_ptr<InputManager> instance;
+    GLFWwindow* window;
+public:
+    InputManager() {
+        window = nullptr;
+        wPressed = false;
+        sPressed = false;
+        aPressed = false;
+        dPressed = false;
+    };
 	void InitInput(GLFWwindow* window);
+    void ProcessInput();
+
+    bool wPressed;
+    bool sPressed;
+    bool aPressed;
+    bool dPressed;
 };
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    InputManager* inputManager = InputManager::GetInstance();
+    switch (key)
+    {
+    case GLFW_KEY_W:
+        if (action == GLFW_PRESS) inputManager->wPressed = true;
+        else if (action == GLFW_RELEASE) {
+            inputManager->wPressed = false;
+        }
+        break;
+    case GLFW_KEY_S:
+        if (action == GLFW_PRESS) inputManager->sPressed = true;
+        else if (action == GLFW_RELEASE) inputManager->sPressed = false;
+        break;
+    case GLFW_KEY_A:
+        if (action == GLFW_PRESS) inputManager->aPressed = true;
+        else if (action == GLFW_RELEASE) inputManager->aPressed = false;
+        break;
+    case GLFW_KEY_D:
+        if (action == GLFW_PRESS) inputManager->dPressed = true;
+        else if (action == GLFW_RELEASE) inputManager->dPressed = false;
+        break;
+    default:
+        break;
+    }
 }
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {

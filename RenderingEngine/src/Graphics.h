@@ -5,14 +5,14 @@
 
 #include <memory>
 
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+//#include "Application.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "Light.h"
 #include "RenderItem.h"
 
 class RenderItem;
+class Application;
 
 struct application_window {
 	int width = 0;
@@ -27,6 +27,7 @@ struct application_window {
 class Graphics
 {
 public:
+	Application* app;
 	GLFWwindow* window;
 	application_window app_window;
 	Camera camera;
@@ -36,7 +37,7 @@ private:
 	std::vector<RenderItem> renderItems;
 
 public:
-	Graphics(GLFWwindow* window, int width, int height);
+	Graphics(Application* app, GLFWwindow* window, int width, int height);
 	~Graphics();
 	void Render();
 private:

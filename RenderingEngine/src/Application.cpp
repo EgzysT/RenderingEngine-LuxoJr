@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Time.h"
 #include "Utils.h"
 
 std::unique_ptr<Application> Application::instance;
@@ -70,12 +71,10 @@ int Application::Init()
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    /*
-        INPUT
-    */
-    inputManager.InitInput(window);
+    inputManager = InputManager::GetInstance();
+    inputManager->InitInput(window);
 
-    graphics = std::make_unique<Graphics>(window, width, height);
+    graphics = std::make_unique<Graphics>(this, window, width, height);
 
     return 0;
 }
@@ -87,13 +86,8 @@ int Application::Init()
 
 int Application::Run()
 {
-    unsigned int frameCount = 0;
-    unsigned long long beginClock;
-    unsigned long long endClock;
-
-    double deltaTime = 0.0f;
-    double lastTime = 0.0f;
-    beginClock = GetTickCount64();
+    Time* time = Time::GetInstance();
+    time->BeginTime();
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
@@ -104,20 +98,10 @@ int Application::Run()
 
         /* Poll for and process events */
         glfwPollEvents();
-
-        endClock = GetTickCount64();
-        double time = glfwGetTime();
-        deltaTime = time - lastTime;
-        lastTime = time;
-        frameCount++;
-        //std::cout << (endClock - beginClock) << std::endl;
-        if (endClock - beginClock >= 1000) {
-            std::cout << (double)frameCount / ((endClock - beginClock) * 0.001) << std::endl;
-            frameCount = 0;
-            beginClock = endClock;
-        }
+        inputManager->ProcessInput();
+        
+        time->NewFrameTime();
     }
-
     return 0;
 }
 

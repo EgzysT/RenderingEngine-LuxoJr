@@ -31,6 +31,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\InputManager.h" />
@@ -45,6 +46,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Time.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

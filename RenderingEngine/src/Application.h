@@ -8,6 +8,8 @@
 #include "Graphics.h"
 #include "InputManager.h"
 
+//class Graphics;
+
 class Application
 {
 public:
@@ -15,7 +17,7 @@ public:
 private:
 	static std::unique_ptr<Application> instance;
 	GLFWwindow* window;
-	InputManager inputManager;
+	InputManager* inputManager;
 	std::unique_ptr<Graphics> graphics;
 	int width;
 	int height;

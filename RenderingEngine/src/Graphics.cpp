@@ -8,8 +8,9 @@
 
 #include "Utils.h"
 
-Graphics::Graphics(GLFWwindow* window, int width, int height)
-    : camera(glm::radians(90.0), (double)width / height, 0.01, 1000.0)
+Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
+    : camera(glm::radians(90.0), (double)width / height, 0.01, 1000.0),
+    app(app)
 {
     app_window = application_window{ width, height, &camera };
     glfwSetWindowUserPointer(window, &app_window);
