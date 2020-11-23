@@ -82,6 +82,31 @@ void Camera::pan(double xoffset, double yoffset) {
 	dirty = true;
 }
 
+void Camera::moveLocalX(double offset)
+{
+	pan(offset, 0);
+}
+
+void Camera::moveLocalY(double offset)
+{
+	pan(0, offset);
+}
+
+void Camera::moveLocalZ(double offset)
+{
+	double tan_fov = glm::tan(fov / 2) * 2;
+	float radius = glm::length(center - eye);
+
+	float delta_z = offset * radius * tan_fov;
+
+	auto direction = glm::normalize(center - eye);
+
+	glm::vec3 t = direction * delta_z;
+	center += t;
+	eye += t;
+	dirty = true;
+}
+
 glm::mat4 Camera::getViewMatrix()
 {
 	if (dirty) {

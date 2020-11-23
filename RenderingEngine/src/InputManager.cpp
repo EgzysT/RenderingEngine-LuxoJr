@@ -30,17 +30,24 @@ void InputManager::ProcessInput()
     double speed = 0.5;
     if (wPressed && !sPressed)
     {
-        appWin->camera->pan(0, speed * deltaTime);
+        appWin->camera->moveLocalZ(speed * deltaTime);
     }
     else if (sPressed && !wPressed) {
-        appWin->camera->pan(0, -speed * deltaTime);
+        appWin->camera->moveLocalZ(-speed * deltaTime);
     }
 
     if (aPressed && !dPressed) {
         appWin->camera->pan(speed * deltaTime, 0);
     }
     else if (dPressed && !aPressed) {
-        //move to the right
         appWin->camera->pan(-speed * deltaTime, 0);
+    }
+
+    if (shiftPressed && !ctrlPressed)
+    {
+        appWin->camera->pan(0, speed * deltaTime);
+    }
+    else if (ctrlPressed && !shiftPressed) {
+        appWin->camera->pan(0, -speed * deltaTime);
     }
 }

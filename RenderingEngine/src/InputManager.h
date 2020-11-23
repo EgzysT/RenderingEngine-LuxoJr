@@ -22,6 +22,8 @@ public:
         sPressed = false;
         aPressed = false;
         dPressed = false;
+        ctrlPressed = false;
+        shiftPressed = false;
     };
 	void InitInput(GLFWwindow* window);
     void ProcessInput();
@@ -30,6 +32,8 @@ public:
     bool sPressed;
     bool aPressed;
     bool dPressed;
+    bool ctrlPressed;
+    bool shiftPressed;
 };
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -57,6 +61,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if (action == GLFW_PRESS) inputManager->dPressed = true;
         else if (action == GLFW_RELEASE) inputManager->dPressed = false;
         break;
+    case GLFW_KEY_LEFT_CONTROL:
+        if (action == GLFW_PRESS) inputManager->ctrlPressed = true;
+        else if (action == GLFW_RELEASE) inputManager->ctrlPressed = false;
+        break;
+    case GLFW_KEY_LEFT_SHIFT:
+        if (action == GLFW_PRESS) inputManager->shiftPressed = true;
+        else if (action == GLFW_RELEASE) inputManager->shiftPressed = false;
+        break;
+
     default:
         break;
     }

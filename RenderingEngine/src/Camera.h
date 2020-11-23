@@ -21,6 +21,9 @@ public:
 	void rotate(double xoffset, double yoffset);
 	void dolly(double offset);
     void pan(double xoffset, double yoffset);
+	void moveLocalX(double offset);
+	void moveLocalY(double offset);
+	void moveLocalZ(double offset);
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix() const;
 	glm::mat4 getViewProjMatrix();
