@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Skybox.cpp" />
+    <ClCompile Include="src\AssetManager.cpp" />
+    <ClCompile Include="src\CameraAnimation.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\RenderItem.cpp" />
     <ClCompile Include="src\Light.cpp" />
@@ -34,6 +37,9 @@
     <ClCompile Include="src\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Skybox.h" />
+    <ClInclude Include="src\AssetManager.h" />
+    <ClInclude Include="src\CameraAnimation.h" />
     <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\RenderItem.h" />
     <ClInclude Include="src\Light.h" />
@@ -162,7 +168,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\stb_image\include;$(SolutionDir)Dependencies\GLM\include;$(SolutionDir)Dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\stb_image\include;$(SolutionDir)Dependencies\GLM\include;$(SolutionDir)Dependencies\assimp\include;$(SolutionDir)Dependencies\nlohmann_json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>

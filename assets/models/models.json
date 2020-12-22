@@ -1,0 +1,16 @@
+{
+    "models": {
+        "barrel": {
+            "id": "barrel",
+            "meshPath": "barrel\\barrel.fbx",
+            "diffusePath": "barrel\\barrel_txt_1.jpg",
+            "normalsPath": "barrel\\barrel_normals.jpg"
+        },
+        "rockBrown": {
+            "id": "rockBrown",
+            "meshPath": "rock1\\Rock_1.fbx",
+            "diffusePath": "rock1\\Rock_1_Base_Color.jpg",
+            "normalsPath": "rock1\\Rock_1_Normal.jpg"
+        }
+    }
+}

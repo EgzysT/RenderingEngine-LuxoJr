@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "RenderItem.h"
+#include "Skybox.h"
 
 class RenderItem;
 class Application;
@@ -32,9 +33,11 @@ public:
 	application_window app_window;
 	Camera camera;
 	std::shared_ptr<Shader> activeShader;
+	std::shared_ptr<Shader> skyboxShader;
 private:
 	std::vector<Light> lights;
 	std::vector<RenderItem> renderItems;
+	std::shared_ptr<Skybox> skybox;
 
 public:
 	Graphics(Application* app, GLFWwindow* window, int width, int height);
@@ -44,6 +47,7 @@ private:
 	void InitShader();
 	void InitLights();
 	void LoadMeshes();
+	void LoadSkybox();
 	void UpdateCamera();
 	void UpdateLights();
 	void DisplayItems();

@@ -64,7 +64,7 @@ private:
 public:
 	Mesh();
 	~Mesh();
-	bool LoadMesh(const std::string& filepath);
+	bool LoadMesh(const std::string& id);
 	void Render();
 };
 

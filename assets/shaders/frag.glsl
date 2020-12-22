@@ -37,12 +37,13 @@ vec4 calcDirectionalLight(int i, vec3 eyeVec, vec3 lightDir, vec3 normal, vec4 t
 
     if (diffuseFactor > 0) {
         diffuseColor = uLight[i].diffuse * diffuseFactor;
-
-        vec3 reflection = reflect(lightDir, normal);
-        float specular = pow( max( dot(reflection, eyeVec), 0.0 ), u_matShininess);
-
-        specularColor = uLight[i].specular * u_matSpecular * specular;
     }
+
+    vec3 reflection = reflect(lightDir, normal);
+    float specular = pow( max( dot(reflection, eyeVec), 0.0 ), u_matShininess);
+
+    specularColor = uLight[i].specular * u_matSpecular * specular;
+
     return texColor * (ambientColor + diffuseColor) + specularColor;
 }
 
@@ -63,7 +64,6 @@ vec4 lighting(vec3 eyeVec, vec3 normal) {
     vec4 result = vec4(0.0, 0.0, 0.0, 0.0);
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
-        // result += uLight[i].ambient;
         if (uLight[i].position.w == 0.0) {
             // Directional Light
             result += calcDirectionalLight(i, eyeVec, normalize(uLight[i].position.xyz), normal, texColor);
