@@ -46,7 +46,7 @@ public:
 private:
 	void InitShader();
 	void InitLights();
-	void LoadMeshes();
+	void LoadScene();
 	void LoadSkybox();
 	void UpdateCamera();
 	void UpdateLights();

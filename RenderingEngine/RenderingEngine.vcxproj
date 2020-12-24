@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\AssetManager.cpp" />
     <ClCompile Include="src\CameraAnimation.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\AssetManager.h" />
     <ClInclude Include="src\CameraAnimation.h" />

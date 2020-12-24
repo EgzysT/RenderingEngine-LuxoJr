@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "Scene.h"
 #include "Utils.h"
 
 Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
@@ -23,7 +24,7 @@ Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
     InitShader();
 
     InitLights();
-    LoadMeshes();
+    LoadScene();
     LoadSkybox();
 
     DebugFunction();
@@ -110,17 +111,17 @@ void Graphics::InitLights()
     lights.push_back(light2);
 }
 
-void Graphics::LoadMeshes()
+void Graphics::LoadScene()
 {
-    Mesh mesh = Mesh{};
     //mesh.LoadMesh("..\\assets\\models\\barrel\\barrel.fbx");
     //mesh.LoadMesh("..\\assets\\models\\TrashCan\\trashcan.fbx");
     //mesh.LoadMesh("..\\assets\\models\\rocks\\RockSet.obj");
     //mesh.LoadMesh("..\\assets\\models\\rock1\\Rock_1.fbx");
     //mesh.LoadMesh("barrel");
-    mesh.LoadMesh("rockBrown");
-    RenderItem renderItem{ this, mesh };
-    renderItems.push_back(renderItem);
+    //mesh.LoadMesh("rockBrown");
+
+    Scene scene("..\\assets\\scene.json");
+    renderItems = std::move(scene.CreateRenderItems(this));
 }
 
 void Graphics::LoadSkybox() {
