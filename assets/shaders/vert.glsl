@@ -1,5 +1,5 @@
 #version 330 core
-#define NUM_LIGHTS 2
+#define NUM_LIGHTS 1
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoords;
@@ -23,21 +23,28 @@ out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_EyeVec;
 out vec3 v_Tangent;
+out vec4 v_FragPosLightSpace;
 out vec3 v_LightDir[NUM_LIGHTS];
 
-uniform mat4 u_ModelViewMatrix;
+uniform mat4 u_ModelMatrix;
+uniform mat4 u_ViewMatrix;
 uniform mat4 u_ProjMatrix;
 uniform mat4 u_NormalMatrix; //transpose(inverse(MV_Matrix)) done in cpu
+uniform mat4 u_LightSpaceMatrix;    // Light Projection * Light View
 
 void main() {
-    vec4 vertPos = u_ModelViewMatrix * position;
+    vec4 fragPos = u_ModelMatrix * vec4(vec3(position), 1.0);
+    vec4 vertPos = u_ViewMatrix * fragPos;
     
     v_EyeVec = -vec3(vertPos.xyz);
     
-    gl_Position = u_ProjMatrix * vertPos;
+    vec4 pos = u_ProjMatrix * vertPos;
 
     v_Normal = vec3(u_NormalMatrix * vec4(normals, 0.0));
     v_Tangent = vec3(u_NormalMatrix * vec4(tangents, 0.0));
+    v_FragPosLightSpace = u_LightSpaceMatrix * fragPos;
+
+    gl_Position = pos;
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
         if (uLight[i].position.w == 1.0) {

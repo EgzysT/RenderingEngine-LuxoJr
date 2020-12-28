@@ -34,11 +34,20 @@ public:
 	Camera camera;
 	std::shared_ptr<Shader> activeShader;
 	std::shared_ptr<Shader> skyboxShader;
+	std::shared_ptr<Shader> depthShader;
+	std::shared_ptr<Shader> depthShaderDebug;
 private:
 	std::vector<Light> lights;
 	std::vector<RenderItem> renderItems;
 	std::shared_ptr<Skybox> skybox;
+	unsigned int depthMapFBO;
+	unsigned int depthMap;
 
+	unsigned int srcWidth;
+	unsigned int srcHeight;
+	const unsigned int SHADOW_WIDTH = 2048;
+	const unsigned int SHADOW_HEIGHT = 2048;
+	unsigned int quadVBO = 0;
 public:
 	Graphics(Application* app, GLFWwindow* window, int width, int height);
 	~Graphics();
@@ -50,8 +59,9 @@ private:
 	void LoadSkybox();
 	void UpdateCamera();
 	void UpdateLights();
-	void DisplayItems();
+	void DisplayItems(bool isShadowPass);
 
-	void DebugFunction();
+	void CreateDepthMap();
+	void RenderDepthQuad();
 };
 

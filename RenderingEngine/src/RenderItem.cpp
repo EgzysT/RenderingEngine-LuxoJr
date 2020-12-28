@@ -12,12 +12,18 @@ RenderItem::RenderItem(Graphics* graphics, Mesh mesh)
 	modelMatrix = glm::mat4(1.0f);
 }
 
-void RenderItem::Render()
+void RenderItem::Render(bool isShadowPass)
 {
-	glm::mat4 modelViewMatrix = graphics->camera.getViewMatrix() * modelMatrix;
-	glm::mat4 normalMatrix = glm::inverseTranspose(modelViewMatrix); // similar to transpose(inverse())
-	graphics->activeShader->SetUniformMatrix4("u_ModelViewMatrix", modelViewMatrix);
-	graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
+	if (isShadowPass) {
+		graphics->depthShader->SetUniformMatrix4("model", modelMatrix);
+	}
+	else {
+		glm::mat4 modelViewMatrix = graphics->camera.getViewMatrix() * modelMatrix;
+		glm::mat4 normalMatrix = glm::inverseTranspose(modelViewMatrix); // similar to transpose(inverse())
+		graphics->activeShader->SetUniformMatrix4("u_ModelMatrix", modelMatrix);
+		graphics->activeShader->SetUniformMatrix4("u_ViewMatrix", graphics->camera.getViewMatrix());
+		graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
+	}
 	mesh.Render();
 }
 
