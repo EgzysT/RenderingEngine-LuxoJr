@@ -97,6 +97,14 @@ void Graphics::Render()
     //RenderDepthQuad();
 }
 
+void Graphics::Update(double deltaTime)
+{
+    for (size_t i = 0; i < renderItems.size(); i++)
+    {
+        renderItems[i].Update(deltaTime);
+    }
+}
+
 void Graphics::InitShader()
 {
     //TODO: The paths are relative to the project root when running inside VS, might not work in standalone

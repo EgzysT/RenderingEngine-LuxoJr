@@ -32,6 +32,19 @@ AssetManager::~AssetManager()
 {
 }
 
+std::shared_ptr<Mesh> AssetManager::GetMesh(std::string meshID)
+{
+    auto meshCache = meshMap.find(meshID);
+    if (meshCache != meshMap.end()) //found in cache
+        return meshCache->second;
+
+    std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>();     // not found, create new
+    newMesh->LoadMesh(meshID);
+    
+    meshMap[meshID] = newMesh;     // store new
+    return newMesh;
+}
+
 std::string AssetManager::GetModelPathOf(std::string id)
 {
     std::string modelPath = modelsJSON["models"][id.c_str()]["meshPath"];

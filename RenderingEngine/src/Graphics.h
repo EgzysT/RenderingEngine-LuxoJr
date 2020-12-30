@@ -52,6 +52,7 @@ public:
 	Graphics(Application* app, GLFWwindow* window, int width, int height);
 	~Graphics();
 	void Render();
+	void Update(double deltaTime);
 private:
 	void InitShader();
 	void InitLights();

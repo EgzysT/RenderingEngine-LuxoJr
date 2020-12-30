@@ -2,14 +2,19 @@
 
 #include <GLM/gtc/matrix_inverse.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/random.hpp>
 
+#include "AssetManager.h"
 #include "Utils.h"
 
-RenderItem::RenderItem(Graphics* graphics, Mesh mesh) 
-	: graphics(graphics), mesh(mesh)
+RenderItem::RenderItem(Graphics* graphics, std::string meshString)
+	: graphics(graphics)
 {
 	//modelMatrix = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.2));
 	modelMatrix = glm::mat4(1.0f);
+	rotationAxis = glm::sphericalRand(1.0);
+
+	mesh = AssetManager::GetInstance()->GetMesh(meshString);
 }
 
 void RenderItem::Render(bool isShadowPass)
@@ -24,7 +29,13 @@ void RenderItem::Render(bool isShadowPass)
 		graphics->activeShader->SetUniformMatrix4("u_ViewMatrix", graphics->camera.getViewMatrix());
 		graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
 	}
-	mesh.Render();
+	mesh->Render();
+}
+
+void RenderItem::Update(double deltaTime)
+{
+	float speed = 20.0f;
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(speed * (float)deltaTime), rotationAxis);
 }
 
 void RenderItem::SetPosition(double x, double y, double z)

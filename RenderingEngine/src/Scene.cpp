@@ -23,9 +23,9 @@ std::vector<RenderItem> Scene::CreateRenderItems(Graphics* graphics)
         glm::vec3 pos (it->at("pos")["x"], it->at("pos")["y"], it->at("pos")["z"]);
         glm::vec3 rot(it->at("rot")["x"], it->at("rot")["y"], it->at("rot")["z"]);
         glm::vec3 sca(it->at("scale")["x"], it->at("scale")["y"], it->at("scale")["z"]);
-        Mesh mesh = Mesh{};
-        mesh.LoadMesh(modelID);
-        RenderItem renderItem{ graphics, mesh };
+        //Mesh mesh = Mesh{};
+        //mesh.LoadMesh(modelID);
+        RenderItem renderItem{ graphics, modelID };
         renderItem.SetPosition(pos.x, pos.y, pos.z);
         renderItem.SetRotation(rot.x, rot.y, rot.z);
         renderItem.SetScale(sca.x, sca.y, sca.z);

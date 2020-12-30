@@ -101,6 +101,8 @@ int Application::Run()
         inputManager->ProcessInput();
         
         time->NewFrameTime();
+
+        graphics->Update(time->deltaTime);
     }
     return 0;
 }

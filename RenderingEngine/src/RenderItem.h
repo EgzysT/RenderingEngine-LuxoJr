@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GLM/glm.hpp"
 
 #include "Graphics.h"
@@ -10,11 +12,13 @@ class RenderItem
 {
 private:
 	Graphics* graphics;
-	Mesh mesh;
+	std::shared_ptr<Mesh> mesh;
 	glm::mat4 modelMatrix;
+	glm::vec3 rotationAxis;
 public:
-	RenderItem(Graphics* graphics, Mesh mesh);
+	RenderItem(Graphics* graphics, std::string meshString);
 	void Render(bool isShadowPass);
+	void Update(double deltaTime);
 	void SetPosition(double x, double y, double z);
 	void SetRotation(float x, float y, float z);
 	void SetScale(double x, double y, double z);
