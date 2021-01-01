@@ -2,21 +2,23 @@
 
 #include <GLM/glm.hpp>
 
-#include "Camera.h"
+//#include "Camera.h"
+
+class Camera;
 
 class CameraAnimation
 {
-private:
-	Camera& camera;
-	double startTime;
-	double duration;
-	glm::vec3 initPos;
-	glm::vec3 finalPos;
-	glm::vec3 initRot;
-	glm::vec3 finalRot;
 public:
-	CameraAnimation(Camera& camera, double startTime, double duration, 
-		glm::vec3 initPos, glm::vec3 finalPos, glm::vec3 initRot, glm::vec3 finalRot);
+	Camera* camera;
+	double startTime;
+	double endTime;
+	glm::vec3 eyeInit;
+	glm::vec3 eyeFinal;
+	glm::vec3 centerInit;
+	glm::vec3 centerFinal;
+
+	CameraAnimation(Camera* camera, double startTime, double endTime, 
+		glm::vec3 eyeInit, glm::vec3 eyeFinal, glm::vec3 centerInit, glm::vec3 centerFinal);
 	void Update();
 };
 

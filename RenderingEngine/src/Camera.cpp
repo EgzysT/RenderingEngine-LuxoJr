@@ -1,8 +1,14 @@
 #include "Camera.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <GLM/gtc/matrix_transform.hpp>
 
+#include <fstream>
+
 #include "Utils.h"
+
+#define CAM_ANIM_JSON_PATH "..\\assets\\camAnim.json"
 
 Camera::Camera(double fovy, double aspect, double zNear, double zFar) :
 	fov(fovy),
@@ -14,6 +20,8 @@ Camera::Camera(double fovy, double aspect, double zNear, double zFar) :
 	dirty(true) 
 {
 	viewMatrix = glm::lookAt(eye, center, up);
+
+	ReadCamAnimsJSON();
 };
 
 Camera::Camera(double fovy, double aspect, double zNear, double zFar, glm::vec3 eye, glm::vec3 center, glm::vec3 up) :
@@ -27,6 +35,8 @@ Camera::Camera(double fovy, double aspect, double zNear, double zFar, glm::vec3 
 	viewMatrix(glm::lookAt(eye, center, up)) 
 {
 	viewMatrix = glm::lookAt(eye, center, up);
+
+	ReadCamAnimsJSON();
 };
 
 Camera::~Camera()
@@ -123,4 +133,43 @@ glm::mat4 Camera::getProjMatrix() const
 glm::mat4 Camera::getViewProjMatrix()
 {
 	return getProjMatrix() * getViewMatrix();
+}
+
+void Camera::Update()
+{
+	if (camAnimsIterator == camAnims.end()) return;
+	double time = glfwGetTime();
+	if (camAnimsIterator->startTime > time) return;
+	while (camAnimsIterator->endTime < time) {
+		camAnimsIterator++;
+		if (camAnimsIterator == camAnims.end()) return;
+	}
+	if (camAnimsIterator->startTime <= time && camAnimsIterator->endTime >= time) {
+		camAnimsIterator->Update();
+	}
+}
+
+void Camera::ReadCamAnimsJSON()
+{
+	std::ifstream camAnimsJsonFile;
+	camAnimsJsonFile.open(CAM_ANIM_JSON_PATH);
+	if (!camAnimsJsonFile.is_open()) {
+		std::cout << "ERROR: failed to open camera animation file at " << CAM_ANIM_JSON_PATH << std::endl;
+	}
+	camAnimsJsonFile >> camAnimsJSON;
+	camAnimsJsonFile.close();
+
+	//std::vector<CameraAnimation> camAnims;
+	auto root = camAnimsJSON["camAnim"];
+	for (json::iterator it = root.begin(); it != root.end(); ++it) {
+		double timeInit = it->at("timeInit");
+		double timeEnd = it->at("timeEnd");
+		glm::vec3 eyeInit(it->at("eyeInit")["x"], it->at("eyeInit")["y"], it->at("eyeInit")["z"]);
+		glm::vec3 eyeEnd(it->at("eyeEnd")["x"], it->at("eyeEnd")["y"], it->at("eyeEnd")["z"]);
+		glm::vec3 centerInit(it->at("centerInit")["x"], it->at("centerInit")["y"], it->at("centerInit")["z"]);
+		glm::vec3 centerEnd(it->at("centerEnd")["x"], it->at("centerEnd")["y"], it->at("centerEnd")["z"]);
+		CameraAnimation camAnim{ this, timeInit, timeEnd, eyeInit, eyeEnd, centerInit, centerEnd };
+		camAnims.push_back(camAnim);
+	}
+	camAnimsIterator = camAnims.begin();
 }

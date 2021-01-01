@@ -36,8 +36,8 @@ int Application::Init()
 
     //width = 1280;
     //height = 768;
-    width = 1600;
-    height = 900;
+    //width = 1600;
+    //height = 900;
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Real-time Rendering 2020", nullptr, nullptr);

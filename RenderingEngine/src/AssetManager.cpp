@@ -22,7 +22,7 @@ AssetManager::AssetManager()
     std::ifstream modelsJsonFile;
     modelsJsonFile.open(MODELS_JSON_PATH);
     if (!modelsJsonFile.is_open()) {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR: failed to open models json file at " << MODELS_JSON_PATH << std::endl;
     }
     modelsJsonFile >> modelsJSON;
     modelsJsonFile.close();

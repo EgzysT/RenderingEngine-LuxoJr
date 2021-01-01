@@ -1,0 +1,28 @@
+{
+    "camAnim": [
+        {
+            "timeInit": 0.0,
+            "timeEnd": 5.0,
+            "eyeInit": {"x": 0.0, "y": 0.0, "z": 4.0 },
+            "eyeEnd": {"x": 0.0, "y": 0.0, "z": 4.0 },
+            "centerInit": {"x": 0.0, "y": 0.0, "z": 0.0 },
+            "centerEnd": {"x": 0.0, "y": 0.0, "z": 0.0 }
+        },
+        {
+            "timeInit": 5.0,
+            "timeEnd": 7.0,
+            "eyeInit": {"x": 0.0, "y": 0.0, "z": 4.0 },
+            "eyeEnd": {"x": 0.0, "y": 0.0, "z": 15.0 },
+            "centerInit": {"x": 0.0, "y": 0.0, "z": 0.0 },
+            "centerEnd": {"x": 0.0, "y": 0.0, "z": 0.0 }
+        },
+        {
+            "timeInit": 7.0,
+            "timeEnd": 9.0,
+            "eyeInit": {"x": 0.0, "y": 0.0, "z": 15.0 },
+            "eyeEnd": {"x": 10.0, "y": 5.0, "z":15.0 },
+            "centerInit": {"x": 0.0, "y": 0.0, "z": 0.0 },
+            "centerEnd": {"x": 0.0, "y": 0.0, "z": 0.0 }
+        }
+    ]
+}

@@ -99,6 +99,7 @@ void Graphics::Render()
 
 void Graphics::Update(double deltaTime)
 {
+    UpdateCamera();
     for (size_t i = 0; i < renderItems.size(); i++)
     {
         renderItems[i].Update(deltaTime);
@@ -124,8 +125,8 @@ void Graphics::InitShader()
     activeShader->SetUniformInteger("u_NormalMap", 1);
     activeShader->SetUniformInteger("u_NormalMap", 1);
     activeShader->SetUniformInteger("u_ShadowMap", 2);
-    activeShader->SetUniformFloat("u_matSpecular", 0.9);
-    activeShader->SetUniformFloat("u_matShininess", 15);
+    activeShader->SetUniformFloat("u_matSpecular", 0.99);
+    activeShader->SetUniformFloat("u_matShininess", 20);
 
     activeShader->SetUniformMatrix4("u_ProjMatrix", camera.getProjMatrix());
 }
@@ -207,7 +208,7 @@ void Graphics::LoadSkybox() {
 
 void Graphics::UpdateCamera()
 {
-
+    camera.Update();
 }
 
 void Graphics::UpdateLights()

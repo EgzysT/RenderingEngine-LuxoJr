@@ -8,7 +8,7 @@ Scene::Scene(std::string filepath)
     std::ifstream sceneFile;
     sceneFile.open(filepath);
     if (!sceneFile.is_open()) {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR: failed to open scene json file at " << filepath << std::endl;
     }
     sceneFile >> sceneJSON;
     sceneFile.close();

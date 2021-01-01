@@ -14,13 +14,13 @@ class Application
 {
 public:
 	static Application* GetInstance();
+	int width;
+	int height;
 private:
 	static std::unique_ptr<Application> instance;
 	GLFWwindow* window;
 	InputManager* inputManager;
 	std::unique_ptr<Graphics> graphics;
-	int width;
-	int height;
 public:
 	Application() {};
 	int Init();			// Initialization
