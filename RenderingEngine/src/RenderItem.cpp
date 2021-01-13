@@ -14,6 +14,9 @@ RenderItem::RenderItem(Graphics* graphics, std::string meshString)
 	modelMatrix = glm::mat4(1.0f);
 	rotationAxis = glm::sphericalRand(1.0);
 
+	float speed = 20.0f;
+	rotationSpeed = glm::gaussRand(speed, 3.0f);
+
 	mesh = AssetManager::GetInstance()->GetMesh(meshString);
 }
 
@@ -34,8 +37,7 @@ void RenderItem::Render(bool isShadowPass)
 
 void RenderItem::Update(double deltaTime)
 {
-	float speed = 20.0f;
-	modelMatrix = glm::rotate(modelMatrix, glm::radians(speed * (float)deltaTime), rotationAxis);
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(rotationSpeed * (float)deltaTime), rotationAxis);
 }
 
 void RenderItem::SetPosition(double x, double y, double z)

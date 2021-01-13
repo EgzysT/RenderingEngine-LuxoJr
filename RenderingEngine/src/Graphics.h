@@ -53,12 +53,12 @@ public:
 	~Graphics();
 	void Render();
 	void Update(double deltaTime);
+	void UpdateCamera();
 private:
 	void InitShader();
 	void InitLights();
 	void LoadScene();
 	void LoadSkybox();
-	void UpdateCamera();
 	void UpdateLights();
 	void DisplayItems(bool isShadowPass);
 

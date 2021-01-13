@@ -52,7 +52,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightDir, vec3 normal)
     // vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0));
     vec3 texelSize = vec3(vec2(1.0 / textureSize(u_ShadowMap, 0)), 1);
 
-    int samples = 1;
+    int samples = 3;
     for(int x = -samples; x <= samples; ++x)
     {
         for(int y = -samples; y <= samples; ++y)
@@ -87,8 +87,8 @@ vec4 calcDirectionalLight(int i, vec3 eyeVec, vec3 lightDir, vec3 normal, vec4 t
 
     float shadow = ShadowCalculation(v_FragPosLightSpace, lightDir, normal);
 
-    vec4 color = texColor * (ambientColor + ((1.0 - max(shadow, shadowCalc)) * diffuseColor)) 
-                + ((1.0 - max(shadow, shadowCalc)) * specularColor);
+    float lightMultiplier = 1.0 - max(shadow, shadowCalc);
+    vec4 color = texColor * (ambientColor + (lightMultiplier * (diffuseColor + specularColor)));
     return color;
 }
 

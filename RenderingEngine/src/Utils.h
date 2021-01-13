@@ -135,6 +135,7 @@ static void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum
     GLsizei length, const GLchar* message, const GLvoid* userParam)
 {
     if (id == 131185) return;
+    if (id == 131218 || id == 131222) return;
     std::string error = FormatDebugOutput(source, type, id, severity, message);
     std::cout << error << std::endl;
     //__debugbreak();

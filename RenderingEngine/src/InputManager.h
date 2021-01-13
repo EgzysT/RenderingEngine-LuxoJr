@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <GLM/gtx/string_cast.hpp>
 
 #include <iostream>
 
@@ -69,6 +70,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if (action == GLFW_PRESS) inputManager->shiftPressed = true;
         else if (action == GLFW_RELEASE) inputManager->shiftPressed = false;
         break;
+
+#ifdef _DEBUG
+    case GLFW_KEY_P:
+        if (action == GLFW_PRESS) {
+            //inputManager->pPressed = true;
+            auto appWin = (application_window*)glfwGetWindowUserPointer(window);
+            std::cout << "eye: " << glm::to_string(appWin->camera->eye) << " center: " << glm::to_string(appWin->camera->center) << std::endl;
+        }
+        break;
+#endif // _DEBUG
 
     default:
         break;

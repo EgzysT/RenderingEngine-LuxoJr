@@ -50,8 +50,7 @@ void Graphics::Render()
     glm::mat4 lightProjection, lightView;
     glm::mat4 lightSpaceMatrix;
     float near_plane = 1.0f, far_plane = 50.0f;
-    //lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
-    lightProjection = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
+    lightProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, near_plane, far_plane);
     lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
     lightSpaceMatrix = lightProjection * lightView;
     // render scene from light's point of view
@@ -135,10 +134,10 @@ void Graphics::InitLights()
 {
     DirectionalLight lightDir = DirectionalLight(0);
     lightDir.SetDirection(0.0, 0.0, -1.0);
-    lightDir.SetAmbient(0.02, 0.02, 0.02);
+    lightDir.SetAmbient(0.1, 0.1, 0.1);
     //lightDir.SetAmbient(0.2, 0.95, 0.91);
-    lightDir.SetDiffuse(0.5, 0.5, 0.5);
-    lightDir.SetSpecular(0.5, 0.5, 0.5);
+    lightDir.SetDiffuse(0.8, 0.8, 0.8);
+    lightDir.SetSpecular(0.99, 0.99, 0.99);
     lightDir.SetAttenuations(1.0, 0.14, 0.07);
     lights.push_back(lightDir);
 

@@ -50,8 +50,8 @@ int Application::Init()
     glfwMakeContextCurrent(window);
 
     //NOTE: This activates/deactivates vsync
-    glfwSwapInterval(1);
-    //glfwSwapInterval(0);
+    //glfwSwapInterval(1);
+    glfwSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
@@ -88,6 +88,7 @@ int Application::Run()
 {
     Time* time = Time::GetInstance();
     time->BeginTime();
+    graphics->UpdateCamera();
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */

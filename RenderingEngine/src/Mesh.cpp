@@ -48,7 +48,7 @@ void Mesh::Clear()
 bool Mesh::InitMeshFromScene(const aiScene* scene, const std::string& filepath)
 {
     meshEntries.resize(scene->mNumMeshes);
-    std::cout << "mNumMaterials: " << scene->mNumMaterials << std::endl;
+    //std::cout << "mNumMaterials: " << scene->mNumMaterials << std::endl;
     renderMaterials.resize(scene->mNumMaterials);
 
     // Initialize the meshes in the scene one by one
@@ -100,7 +100,7 @@ bool Mesh::LoadMesh(const std::string& id)
 {
     AssetManager* am = AssetManager::GetInstance();
     std::string filepath = am->GetModelPathOf(id);
-    std::cout << filepath << std::endl;
+    //std::cout << filepath << std::endl;
 
     Assimp::Importer importer;
 
