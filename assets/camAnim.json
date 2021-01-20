@@ -18,30 +18,30 @@
         },
         {
             "timeInit": 8.0,
-            "timeEnd": 13.0,
+            "timeEnd": 12.5,
             "eyeInit": {"x": 30.0, "y": 20.0, "z":40.0 },
             "eyeEnd": {"x": 18.5, "y":11.0, "z": 27.0 },
             "centerInit": {"x": 0.0, "y": 0.0, "z": 0.0 },
             "centerEnd": {"x": 9.0, "y": 0.0, "z": 15.0 }
         },
         {
-            "timeInit": 13.0,
-            "timeEnd": 16.0,
+            "timeInit": 12.5,
+            "timeEnd": 15.0,
             "eyeInit": {"x": 18.5, "y":11.0, "z": 27.0 },
             "eyeEnd": {"x": 17.0, "y": 5.0, "z": 24.0 },
             "centerInit": {"x": 9.0, "y": 0.0, "z": 15.0 },
             "centerEnd": {"x": 12.0, "y": -12.0, "z": 18.0 }
         },
         {
-            "timeInit": 16.0,
-            "timeEnd": 18.0,
+            "timeInit": 15.0,
+            "timeEnd": 17.0,
             "eyeInit": {"x": 17.0, "y": 5.0, "z": 24.0 },
             "eyeEnd": {"x": 16.0, "y": -2.0, "z": 22.5 },
             "centerInit": {"x": 12.0, "y": -12.0, "z": 18.0 },
             "centerEnd": {"x": 15.0, "y": -20.0, "z": 21.0 }
         },
         {
-            "timeInit": 18.0,
+            "timeInit": 17.0,
             "timeEnd": 20.0,
             "eyeInit": {"x": 16.0, "y": -2.0, "z": 22.5 },
             "eyeEnd": {"x": 15.5, "y": -17.5, "z": 22.5 },
@@ -58,22 +58,22 @@
         },
         {
             "timeInit": 22.0,
-            "timeEnd": 24.0,
+            "timeEnd": 25.0,
             "eyeInit": {"x": 14.4, "y": -21.7, "z": 20.8 },
             "eyeEnd": {"x": 10.0, "y": -25.0, "z": 4.0 },
             "centerInit": {"x": 12.4, "y": -35.0, "z": 8.8 },
             "centerEnd": {"x": 6.4, "y": -8.0, "z": -1.0 }
         },
         {
-            "timeInit": 24.0,
-            "timeEnd": 28.0,
+            "timeInit": 25.0,
+            "timeEnd": 29.0,
             "eyeInit": {"x": 10.0, "y": -25.0, "z": 4.0 },
             "eyeEnd": {"x": -15.0, "y": -18.0, "z": -23.0 },
             "centerInit": {"x": 6.4, "y": -8.0, "z": -1.0 },
             "centerEnd": {"x": -13.4, "y": -8.0, "z": -9.5 }
         },
         {
-            "timeInit": 28.0,
+            "timeInit": 29.0,
             "timeEnd": 32.0,
             "eyeInit": {"x": -15.0, "y": -18.0, "z": -23.0 },
             "eyeEnd": {"x": -28.0, "y": 9.0, "z": -15.0 },
@@ -82,30 +82,30 @@
         },
         {
             "timeInit": 32.0,
-            "timeEnd": 36.0,
+            "timeEnd": 35.0,
             "eyeInit": {"x": -28.0, "y": 9.0, "z": -15.0 },
             "eyeEnd": {"x": -32.0, "y": 13.0, "z": -8.5 },
             "centerInit": {"x": -15.0, "y": 2.0, "z": -4.4 },
             "centerEnd": {"x": -19.0, "y": 1.0, "z": 8.0 }
         },
         {
-            "timeInit": 36.0,
-            "timeEnd": 39.0,
+            "timeInit": 35.0,
+            "timeEnd": 38.0,
             "eyeInit": {"x": -32.0, "y": 13.0, "z": -8.5 },
             "eyeEnd": {"x": -31.0, "y": 20.0, "z": -1.0 },
             "centerInit": {"x": -19.0, "y": 1.0, "z": 8.0 },
             "centerEnd": {"x": -19.0, "y": 1.0, "z": 8.0 }
         },
         {
-            "timeInit": 39.0,
-            "timeEnd": 42.0,
+            "timeInit": 38.0,
+            "timeEnd": 41.0,
             "eyeInit": {"x": -31.0, "y": 20.0, "z": -1.0 },
             "eyeEnd": {"x": -20.0, "y": 25.0, "z": 7.5 },
             "centerInit": {"x": -19.0, "y": 1.0, "z": 8.0 },
             "centerEnd": {"x": -19.0, "y": 1.0, "z": 8.0 }
         },
         {
-            "timeInit": 42.0,
+            "timeInit": 41.0,
             "timeEnd": 45.0,
             "eyeInit": {"x": -20.0, "y": 25.0, "z": 7.5 },
             "eyeEnd": {"x": -5.5, "y": 7.0, "z": 27.0 },
