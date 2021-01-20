@@ -46,30 +46,30 @@ void Graphics::Render()
     // 1. render depth of scene to texture (from light's perspective)
     // --------------------------------------------------------------
 
-    glm::vec3 lightPos(0.0, 0.0, 30.0);
-    glm::mat4 lightProjection, lightView;
-    glm::mat4 lightSpaceMatrix;
-    float near_plane = 1.0f, far_plane = 50.0f;
-    lightProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, near_plane, far_plane);
-    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-    lightSpaceMatrix = lightProjection * lightView;
-    // render scene from light's point of view
-    depthShader->Bind();
-    depthShader->SetUniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
+    //glm::vec3 lightPos(0.0, 0.0, 30.0);
+    //glm::mat4 lightProjection, lightView;
+    //glm::mat4 lightSpaceMatrix;
+    //float near_plane = 1.0f, far_plane = 50.0f;
+    //lightProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, near_plane, far_plane);
+    //lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+    //lightSpaceMatrix = lightProjection * lightView;
+    //// render scene from light's point of view
+    //depthShader->Bind();
+    //depthShader->SetUniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
 
-    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, woodTexture);
-    glCullFace(GL_FRONT);
-    DisplayItems(true);
-    glCullFace(GL_BACK);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    //glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    //glClear(GL_DEPTH_BUFFER_BIT);
+    ////glActiveTexture(GL_TEXTURE0);
+    ////glBindTexture(GL_TEXTURE_2D, woodTexture);
+    //glCullFace(GL_FRONT);
+    //DisplayItems(true);
+    //glCullFace(GL_BACK);
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // reset viewport
-    glViewport(0, 0, srcWidth, srcHeight);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //// reset viewport
+    //glViewport(0, 0, srcWidth, srcHeight);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // 2. render scene as normal using the generated depth/shadow map  
     // --------------------------------------------------------------
@@ -82,7 +82,7 @@ void Graphics::Render()
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, depthMap);
 
-    activeShader->SetUniformMatrix4("u_LightSpaceMatrix", lightSpaceMatrix);
+    //activeShader->SetUniformMatrix4("u_LightSpaceMatrix", lightSpaceMatrix);
     DisplayItems(false);
 
     // draw skybox as last

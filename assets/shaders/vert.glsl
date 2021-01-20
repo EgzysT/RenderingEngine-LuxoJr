@@ -23,14 +23,14 @@ out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_EyeVec;
 out vec3 v_Tangent;
-out vec4 v_FragPosLightSpace;
+// out vec4 v_FragPosLightSpace;
 out vec3 v_LightDir[NUM_LIGHTS];
 
 uniform mat4 u_ModelMatrix;
 uniform mat4 u_ViewMatrix;
 uniform mat4 u_ProjMatrix;
 uniform mat4 u_NormalMatrix; //transpose(inverse(MV_Matrix)) done in cpu
-uniform mat4 u_LightSpaceMatrix;    // Light Projection * Light View
+// uniform mat4 u_LightSpaceMatrix;    // Light Projection * Light View
 
 void main() {
     vec4 fragPos = u_ModelMatrix * vec4(vec3(position), 1.0);
@@ -42,7 +42,7 @@ void main() {
 
     v_Normal = vec3(u_NormalMatrix * vec4(normals, 0.0));
     v_Tangent = vec3(u_NormalMatrix * vec4(tangents, 0.0));
-    v_FragPosLightSpace = u_LightSpaceMatrix * fragPos;
+    // v_FragPosLightSpace = u_LightSpaceMatrix * fragPos;
 
     gl_Position = pos;
 

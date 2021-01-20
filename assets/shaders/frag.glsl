@@ -7,7 +7,7 @@ in vec2 v_TexCoord;
 in vec3 v_Normal;
 in vec3 v_EyeVec;
 in vec3 v_Tangent;
-in vec4 v_FragPosLightSpace;
+// in vec4 v_FragPosLightSpace;
 in vec3 v_LightDir[NUM_LIGHTS];
 
 uniform vec4 u_Color;
@@ -85,10 +85,10 @@ vec4 calcDirectionalLight(int i, vec3 eyeVec, vec3 lightDir, vec3 normal, vec4 t
 
     specularColor = uLight[i].specular * u_matSpecular * specular;
 
-    float shadow = ShadowCalculation(v_FragPosLightSpace, lightDir, normal);
+    // float shadow = ShadowCalculation(v_FragPosLightSpace, lightDir, normal);
 
-    float lightMultiplier = 1.0 - max(shadow, shadowCalc);
-    vec4 color = texColor * (ambientColor + (lightMultiplier * (diffuseColor + specularColor)));
+    // float lightMultiplier = 1.0 - max(shadow, shadowCalc);
+    vec4 color = texColor * (ambientColor + diffuseColor + specularColor);
     return color;
 }
 
