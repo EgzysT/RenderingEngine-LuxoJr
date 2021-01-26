@@ -61,10 +61,13 @@ private:
 	void InitMesh(unsigned int Index, const aiMesh* paiMesh);
 	bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 	void Clear();
+    void RenderBoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax);
 public:
+    std::vector<Vertex> vertices;
 	Mesh();
 	~Mesh();
 	bool LoadMesh(const std::string& id);
-	void Render();
+    void Render();
+	void Render(VertexBuffer* boundingBoxVBO);
 };
 

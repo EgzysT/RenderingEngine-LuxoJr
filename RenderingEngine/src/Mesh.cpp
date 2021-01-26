@@ -94,6 +94,7 @@ void Mesh::InitMesh(unsigned int index, const aiMesh* mesh)
     }
 
     meshEntries[index].InitEntry(verts, indices);
+    vertices = verts;
 }
 
 bool Mesh::LoadMesh(const std::string& id)
@@ -196,9 +197,7 @@ bool Mesh::InitMaterials(const aiScene* scene, const std::string& filepath)
     //renderMaterials[0]->normalTexture = std::make_unique<Texture>("..\\assets\\models\\rock1\\Rock_1_Normal.jpg", 1);
     return Ret;
 }
-
-void Mesh::Render()
-{
+void Mesh::Render() {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
@@ -220,6 +219,67 @@ void Mesh::Render()
         }
 
         glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
+    }
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+}
+
+void Mesh::RenderBoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
+{
+    glBegin(GL_LINES);
+    glColor3f(0.0f, 1.0, 0.0);
+    // front
+    glVertex3f(boundingMin.x, boundingMax.y, boundingMax.z);
+    glVertex3f(boundingMax.x, boundingMax.y, boundingMax.z);
+    glVertex3f(boundingMin.x, boundingMin.y, boundingMax.z);
+    glVertex3f(boundingMax.x, boundingMin.y, boundingMax.z);
+    glVertex3f(boundingMin.x, boundingMin.y, boundingMax.z);
+    glVertex3f(boundingMin.x, boundingMax.y, boundingMax.z);
+    glVertex3f(boundingMax.x, boundingMin.y, boundingMax.z);
+    glVertex3f(boundingMax.x, boundingMax.y, boundingMax.z);
+
+    //[...] //back, top, bottom
+
+    glEnd();
+}
+
+void Mesh::Render(VertexBuffer* boundingBoxVBO)
+{
+    glEnableVertexAttribArray(0);
+    //glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(2);
+    //glEnableVertexAttribArray(3);
+
+    for (unsigned int i = 0; i < meshEntries.size(); i++) {
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
+        meshEntries[i].vb->Bind();
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
+
+        meshEntries[i].ib->Bind();
+
+        const unsigned int MaterialIndex = meshEntries[i].matIndex;
+
+        if (MaterialIndex < renderMaterials.size() && renderMaterials[MaterialIndex]) {
+            renderMaterials[MaterialIndex]->Bind();
+        }
+
+        glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
+
+        //RenderBoundingBox(boundingMax, boundingMin);
+        boundingBoxVBO->Bind();
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+        glDrawArrays(GL_LINES, 0, 32);
     }
 
     glDisableVertexAttribArray(0);

@@ -123,11 +123,13 @@ void Graphics::InitShader()
     activeShader->SetUniformInteger("u_Texture", 0); 
     activeShader->SetUniformInteger("u_NormalMap", 1);
     activeShader->SetUniformInteger("u_NormalMap", 1);
-    activeShader->SetUniformInteger("u_ShadowMap", 2);
+    //activeShader->SetUniformInteger("u_ShadowMap", 2);
     activeShader->SetUniformFloat("u_matSpecular", 0.99);
     activeShader->SetUniformFloat("u_matShininess", 20);
 
     activeShader->SetUniformMatrix4("u_ProjMatrix", camera.getProjMatrix());
+
+    glLineWidth(2);
 }
 
 void Graphics::InitLights()
@@ -188,18 +190,18 @@ void Graphics::LoadScene()
 
 void Graphics::LoadSkybox() {
     std::vector<std::string> faces{
-        "..\\assets\\textures\\skybox1\\px.png", 
+        /*"..\\assets\\textures\\skybox1\\px.png", 
         "..\\assets\\textures\\skybox1\\nx.png",
         "..\\assets\\textures\\skybox1\\py.png",
         "..\\assets\\textures\\skybox1\\ny.png",
         "..\\assets\\textures\\skybox1\\pz.png",
-        "..\\assets\\textures\\skybox1\\nz.png"
-        /*"..\\assets\\textures\\skybox2\\right.png",
+        "..\\assets\\textures\\skybox1\\nz.png"*/
+        "..\\assets\\textures\\skybox2\\right.png",
         "..\\assets\\textures\\skybox2\\left.png",
         "..\\assets\\textures\\skybox2\\top.png",
         "..\\assets\\textures\\skybox2\\bottom.png",
         "..\\assets\\textures\\skybox2\\front.png",
-        "..\\assets\\textures\\skybox2\\back.png"*/
+        "..\\assets\\textures\\skybox2\\back.png"
     };
     
     skybox = std::make_shared<Skybox>(faces);
