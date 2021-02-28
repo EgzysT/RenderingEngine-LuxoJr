@@ -85,6 +85,9 @@ void Graphics::Render()
     //activeShader->SetUniformMatrix4("u_LightSpaceMatrix", lightSpaceMatrix);
     DisplayItems(false);
 
+    boxShader->Bind();
+    DisplayAABB();
+
     // draw skybox as last
     skybox->Render(skyboxShader, &camera);
 
@@ -117,6 +120,9 @@ void Graphics::InitShader()
     depthShaderDebug = std::make_shared<Shader>("..\\assets\\shaders\\vertDepthDebug.glsl", "..\\assets\\shaders\\fragDepthDebug.glsl");
     depthShaderDebug->Bind();
     depthShaderDebug->SetUniformInteger("depthMap", 0);
+
+    boxShader = std::make_shared<Shader>("..\\assets\\shaders\\vertBox.glsl", "..\\assets\\shaders\\fragBox.glsl");
+    boxShader->Bind();
 
     activeShader = std::make_shared<Shader>("..\\assets\\shaders\\vert.glsl", "..\\assets\\shaders\\frag.glsl");
     activeShader->Bind();
@@ -226,6 +232,13 @@ void Graphics::DisplayItems(bool isShadowPass)
     for (size_t i = 0; i < renderItems.size(); i++)
     {
         renderItems[i].Render(isShadowPass);
+    }
+}
+
+void Graphics::DisplayAABB() {
+    for (size_t i = 0; i < renderItems.size(); i++)
+    {
+        renderItems[i].RenderBoundingBox();
     }
 }
 

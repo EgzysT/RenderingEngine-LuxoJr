@@ -36,6 +36,7 @@ public:
 	std::shared_ptr<Shader> skyboxShader;
 	std::shared_ptr<Shader> depthShader;
 	std::shared_ptr<Shader> depthShaderDebug;
+	std::shared_ptr<Shader> boxShader;
 private:
 	std::vector<Light> lights;
 	std::vector<RenderItem> renderItems;
@@ -61,6 +62,7 @@ private:
 	void LoadSkybox();
 	void UpdateLights();
 	void DisplayItems(bool isShadowPass);
+	void DisplayAABB();
 
 	void CreateDepthMap();
 	void RenderDepthQuad();

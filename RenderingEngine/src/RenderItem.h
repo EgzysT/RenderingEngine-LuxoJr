@@ -28,6 +28,7 @@ public:
 
 	RenderItem(Graphics* graphics, std::string meshString);
 	void Render(bool isShadowPass);
+	void RenderBoundingBox();
 	void Update(double deltaTime);
 	void SetPosition(double x, double y, double z);
 	void SetRotation(float x, float y, float z);

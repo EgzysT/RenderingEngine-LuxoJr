@@ -1,8 +1,92 @@
 #include "BoundingBox.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <vector>
+
 BoundingBox::BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
 	: max(boundingMax), min(boundingMin)
 {
+	glm::vec3 color(0.7, 0.3, 0.0);
+
+	std::vector<float> verts = {
+		//front
+		boundingMin.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		//back
+		boundingMin.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		//top
+		boundingMin.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMax.y, boundingMax.z, color.r, color.g, color.b,
+		//bottom
+		boundingMin.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMin.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
+		boundingMax.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b
+
+		////front
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		////back
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		////top
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		////bottom
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z
+	};
+
+	vbo = std::make_shared<VertexBuffer>(&verts[0], sizeof(float) * verts.size());
 }
 
 glm::vec3 BoundingBox::calculateCenter()
@@ -45,4 +129,18 @@ bool BoundingBox::intersectsWith(BoundingBox bb)
 		}
 	}
 	return true;
+}
+
+void BoundingBox::Render(VertexBuffer* vbo)
+{
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+	vbo->Bind();
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);					// position
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (const GLvoid*)12);	// colors
+	glDrawArrays(GL_LINES, 0, 32);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
 }

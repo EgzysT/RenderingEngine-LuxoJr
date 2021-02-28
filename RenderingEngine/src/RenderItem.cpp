@@ -34,7 +34,15 @@ void RenderItem::Render(bool isShadowPass)
 		graphics->activeShader->SetUniformMatrix4("u_ViewMatrix", graphics->camera.getViewMatrix());
 		graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
 	}
-	mesh->Render(boundingBoxVBO.get());
+	//mesh->Render(boundingBoxVBO.get());
+	mesh->Render();
+}
+
+void RenderItem::RenderBoundingBox()
+{
+	glm::mat4 mvpMatrix = graphics->camera.getProjMatrix() * graphics->camera.getViewMatrix() * modelMatrix;
+	graphics->boxShader->SetUniformMatrix4("uMVPMatrix", mvpMatrix);
+	aabb.Render(boundingBoxVBO.get());
 }
 
 void RenderItem::Update(double deltaTime)
@@ -104,42 +112,78 @@ void RenderItem::CalculateBoundingBox()
 
 	std::vector<float> verts = {
 		//front
-		boundingMin.x, boundingMax.y, boundingMax.z,
-		boundingMax.x, boundingMax.y, boundingMax.z,
-		boundingMin.x, boundingMin.y, boundingMax.z,
-		boundingMax.x, boundingMin.y, boundingMax.z,
-		boundingMin.x, boundingMin.y, boundingMax.z,
-		boundingMin.x, boundingMax.y, boundingMax.z,
-		boundingMax.x, boundingMin.y, boundingMax.z,
-		boundingMax.x, boundingMax.y, boundingMax.z,
+		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
 		//back
-		boundingMin.x, boundingMax.y, boundingMin.z,
-		boundingMax.x, boundingMax.y, boundingMin.z,
-		boundingMin.x, boundingMin.y, boundingMin.z,
-		boundingMax.x, boundingMin.y, boundingMin.z,
-		boundingMin.x, boundingMin.y, boundingMin.z,
-		boundingMin.x, boundingMax.y, boundingMin.z,
-		boundingMax.x, boundingMin.y, boundingMin.z,
-		boundingMax.x, boundingMax.y, boundingMin.z,
+		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
 		//top
-		boundingMin.x, boundingMax.y, boundingMax.z,
-		boundingMax.x, boundingMax.y, boundingMax.z,
-		boundingMin.x, boundingMax.y, boundingMin.z,
-		boundingMax.x, boundingMax.y, boundingMin.z,
-		boundingMin.x, boundingMax.y, boundingMin.z,
-		boundingMin.x, boundingMax.y, boundingMax.z,
-		boundingMax.x, boundingMax.y, boundingMin.z,
-		boundingMax.x, boundingMax.y, boundingMax.z,
+		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
 		//bottom
-		boundingMin.x, boundingMin.y, boundingMax.z,
-		boundingMax.x, boundingMin.y, boundingMax.z,
-		boundingMin.x, boundingMin.y, boundingMin.z,
-		boundingMax.x, boundingMin.y, boundingMin.z,
-		boundingMin.x, boundingMin.y, boundingMin.z,
-		boundingMin.x, boundingMin.y, boundingMax.z,
-		boundingMax.x, boundingMin.y, boundingMin.z,
-		boundingMax.x, boundingMin.y, boundingMax.z,
+		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
+		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f
 
+		////front
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		////back
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		////top
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMin.z,
+		//boundingMin.x, boundingMax.y, boundingMax.z,
+		//boundingMax.x, boundingMax.y, boundingMin.z,
+		//boundingMax.x, boundingMax.y, boundingMax.z,
+		////bottom
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMin.z,
+		//boundingMin.x, boundingMin.y, boundingMax.z,
+		//boundingMax.x, boundingMin.y, boundingMin.z,
+		//boundingMax.x, boundingMin.y, boundingMax.z
 	};
 
 	boundingBoxVBO = std::make_shared<VertexBuffer>(&verts[0], sizeof(float) * verts.size());

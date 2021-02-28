@@ -36,8 +36,14 @@ std::vector<RenderItem> Scene::CreateRenderItems(Graphics* graphics)
     //return renderItems;
 
     std::vector<RenderItem> renderItems;
+#ifdef _DEBUG
+    int numAsteroids = 2000;
+    double radius = 100;
+#endif // _DEBUG
+#ifndef _DEBUG
     int numAsteroids = 50000;
     double radius = 500;
+#endif // !_DEBUG
     for (int i = 0; i < numAsteroids; i++) {
         glm::vec3 pos = glm::ballRand(radius);
         glm::vec3 rot(glm::ballRand(179.9));
