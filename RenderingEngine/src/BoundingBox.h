@@ -14,7 +14,7 @@ public:
 	std::shared_ptr<VertexBuffer> vbo;
 
 	BoundingBox():vbo(nullptr){}
-	BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax);
+	BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax, glm::vec3 color);
 	glm::vec3 calculateCenter();
 	glm::vec3 calculateDimensions();
 
@@ -22,6 +22,6 @@ public:
 	bool containsRegion(BoundingBox bb);
 	bool intersectsWith(BoundingBox bb);
 
-	void Render(VertexBuffer* vbo);
+	void Render();
 };
 

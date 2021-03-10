@@ -7,8 +7,11 @@
 #include <iostream>
 
 #include "Graphics.h"
+#include "application_window.h"
 
 class Application;
+//class Graphics;
+
 class InputManager
 {
 public:
@@ -25,6 +28,8 @@ public:
         dPressed = false;
         ctrlPressed = false;
         shiftPressed = false;
+        oPressed = false;
+        pPressed = false;
     };
 	void InitInput(GLFWwindow* window);
     void ProcessInput();
@@ -35,6 +40,9 @@ public:
     bool dPressed;
     bool ctrlPressed;
     bool shiftPressed;
+    bool iPressed;
+    bool oPressed;
+    bool pPressed;
 };
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -70,16 +78,40 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if (action == GLFW_PRESS) inputManager->shiftPressed = true;
         else if (action == GLFW_RELEASE) inputManager->shiftPressed = false;
         break;
-
-#ifdef _DEBUG
-    case GLFW_KEY_P:
-        if (action == GLFW_PRESS) {
-            //inputManager->pPressed = true;
+    case GLFW_KEY_I:
+        if (action == GLFW_PRESS && !inputManager->iPressed) {
+            inputManager->iPressed = true;
             auto appWin = (application_window*)glfwGetWindowUserPointer(window);
-            std::cout << "eye: " << glm::to_string(appWin->camera->eye) << " center: " << glm::to_string(appWin->camera->center) << std::endl;
+            appWin->graphics->runCullOctree = !appWin->graphics->runCullOctree;
         }
+        else if (action == GLFW_RELEASE) inputManager->iPressed = false;
         break;
-#endif // _DEBUG
+    case GLFW_KEY_O:
+        if (action == GLFW_PRESS && !inputManager->oPressed) {
+            inputManager->oPressed = true;
+            auto appWin = (application_window*)glfwGetWindowUserPointer(window);
+            appWin->graphics->runDisplayOctree = !appWin->graphics->runDisplayOctree;
+        }
+        else if (action == GLFW_RELEASE) inputManager->oPressed = false;
+        break;
+    case GLFW_KEY_P:
+        if (action == GLFW_PRESS && !inputManager->pPressed) {
+            inputManager->pPressed = true;
+            auto appWin = (application_window*)glfwGetWindowUserPointer(window);
+            appWin->graphics->runDisplayBoundBoxes = !appWin->graphics->runDisplayBoundBoxes;
+        }
+        else if (action == GLFW_RELEASE) inputManager->pPressed = false;
+        break;
+
+//#ifdef _DEBUG
+//    case GLFW_KEY_P:
+//        if (action == GLFW_PRESS) {
+//            //inputManager->pPressed = true;
+//            auto appWin = (application_window*)glfwGetWindowUserPointer(window);
+//            std::cout << "eye: " << glm::to_string(appWin->camera->eye) << " center: " << glm::to_string(appWin->camera->center) << std::endl;
+//        }
+//        break;
+//#endif // _DEBUG
 
     default:
         break;

@@ -4,6 +4,7 @@
 
 #include "Time.h"
 #include "Utils.h"
+#include "InputManager.h"
 
 std::unique_ptr<Application> Application::instance;
 

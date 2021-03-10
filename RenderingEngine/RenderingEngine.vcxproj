@@ -40,7 +40,9 @@
     <ClCompile Include="src\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\application_window.h" />
     <ClInclude Include="src\BoundingBox.h" />
+    <ClInclude Include="src\FrustrumCull.h" />
     <ClInclude Include="src\Octree.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Skybox.h" />

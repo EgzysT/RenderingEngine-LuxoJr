@@ -16,6 +16,8 @@ private:
 	Graphics* graphics;
 	std::shared_ptr<Mesh> mesh;
 	glm::mat4 modelMatrix;
+	glm::mat4 rotMatrix;
+	glm::mat4 translScaMatrix;
 	//glm::vec3 rotationAxis;
 	//float rotationSpeed;
 

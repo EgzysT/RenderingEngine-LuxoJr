@@ -11,19 +11,11 @@
 #include "Light.h"
 #include "RenderItem.h"
 #include "Skybox.h"
+#include "Octree.h"
+#include "application_window.h"
 
 class RenderItem;
 class Application;
-
-struct application_window {
-	int width = 0;
-	int height = 0;
-	Camera* camera = nullptr;
-	bool mouse_left = false;
-	bool mouse_right = false;
-	double lastx = 0.0;
-	double lasty = 0.0;
-};
 
 class Graphics
 {
@@ -37,6 +29,10 @@ public:
 	std::shared_ptr<Shader> depthShader;
 	std::shared_ptr<Shader> depthShaderDebug;
 	std::shared_ptr<Shader> boxShader;
+	std::shared_ptr<Node> octreeRoot;
+	bool runCullOctree;
+	bool runDisplayOctree;
+	bool runDisplayBoundBoxes;
 private:
 	std::vector<Light> lights;
 	std::vector<RenderItem> renderItems;
@@ -62,7 +58,9 @@ private:
 	void LoadSkybox();
 	void UpdateLights();
 	void DisplayItems(bool isShadowPass);
+	void DisplayItemsOctree();
 	void DisplayAABB();
+	void CreateOctree();
 
 	void CreateDepthMap();
 	void RenderDepthQuad();

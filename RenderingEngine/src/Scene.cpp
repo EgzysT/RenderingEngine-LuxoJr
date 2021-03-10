@@ -50,7 +50,7 @@ std::vector<RenderItem> Scene::CreateRenderItems(Graphics* graphics)
         glm::vec3 sca(0.2, 0.2, 0.2);
         RenderItem renderItem{ graphics, "rockBrown" };
         renderItem.SetPosition(pos.x, pos.y, pos.z);
-        //renderItem.SetRotation(rot.x, rot.y, rot.z);
+        renderItem.SetRotation(rot.x, rot.y, rot.z);
         renderItem.SetScale(sca.x, sca.y, sca.z);
         renderItem.CalculateBoundingBox();
         renderItems.push_back(renderItem);

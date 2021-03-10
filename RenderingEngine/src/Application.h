@@ -6,9 +6,10 @@
 #include <memory>
 
 #include "Graphics.h"
-#include "InputManager.h"
+//#include "InputManager.h"
 
 //class Graphics;
+class InputManager;
 
 class Application
 {

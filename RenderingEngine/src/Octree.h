@@ -3,12 +3,14 @@
 #include <vector>
 #include <stack>
 
-#include "RenderItem.h"
+//#include "RenderItem.h"
 #include "BoundingBox.h"
+#include "FrustrumCull.h"
 
 #define NUM_CHILDREN 8
-#define MIN_BOUNDS 8
+#define MIN_BOUNDS 32.0
 
+class RenderItem;
 enum class Octant : unsigned char {
 	O1 = 0x01,	// 0b00000001
 	O2 = 0x02,	// 0b00000010
@@ -21,7 +23,7 @@ enum class Octant : unsigned char {
 };
 
 // Utility method to calculate the bounds of a child node
-void CalculateBounds(BoundingBox* out, Octant octant, BoundingBox parentRegion);
+void CalculateBounds(BoundingBox &out, Octant octant, BoundingBox parentRegion);
 
 class Node {
 public:
@@ -39,9 +41,10 @@ public:
 	//Node(BoundingBox bounds);
 	Node(BoundingBox bounds, std::vector<RenderItem> objectList);
 
-	void build();
-	void render();
-	void destroy();
+	void Build();
+	void Render(Frustum frustum);
+	void RenderRegion();
+	void Destroy();
 };
 
 class Octree

@@ -5,10 +5,11 @@
 
 #include <vector>
 
-BoundingBox::BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
+BoundingBox::BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax, glm::vec3 color)
 	: max(boundingMax), min(boundingMin)
 {
-	glm::vec3 color(0.7, 0.3, 0.0);
+	//glm::vec3 color(0.7, 0.3, 0.0);
+	//glm::vec3 color(0.3, 0.7, 0.0);
 
 	std::vector<float> verts = {
 		//front
@@ -47,43 +48,6 @@ BoundingBox::BoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
 		boundingMin.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b,
 		boundingMax.x, boundingMin.y, boundingMin.z, color.r, color.g, color.b,
 		boundingMax.x, boundingMin.y, boundingMax.z, color.r, color.g, color.b
-
-		////front
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		////back
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		////top
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		////bottom
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z
 	};
 
 	vbo = std::make_shared<VertexBuffer>(&verts[0], sizeof(float) * verts.size());
@@ -109,10 +73,10 @@ bool BoundingBox::containsPoint(glm::vec3 point)
 
 bool BoundingBox::containsRegion(BoundingBox bb)
 {
-	//return (bb.min.x >= min.x) && (bb.max.x <= max.x) &&
-	//	(bb.min.y >= min.y) && (bb.max.y <= max.y) &&
-	//	(bb.min.z >= min.z) && (bb.max.z <= max.z);
-	return containsPoint(bb.min) && containsPoint(bb.max);
+	return (bb.min.x >= min.x) && (bb.max.x <= max.x) &&
+		(bb.min.y >= min.y) && (bb.max.y <= max.y) &&
+		(bb.min.z >= min.z) && (bb.max.z <= max.z);
+	//return containsPoint(bb.min) && containsPoint(bb.max);
 }
 
 bool BoundingBox::intersectsWith(BoundingBox bb)
@@ -131,8 +95,9 @@ bool BoundingBox::intersectsWith(BoundingBox bb)
 	return true;
 }
 
-void BoundingBox::Render(VertexBuffer* vbo)
+void BoundingBox::Render()
 {
+	if (vbo == nullptr) return;
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 

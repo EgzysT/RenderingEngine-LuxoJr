@@ -14,6 +14,8 @@ RenderItem::RenderItem(Graphics* graphics, std::string meshString)
 {
 	//modelMatrix = glm::scale(std::move(RotMat4(30.0, 50.0, 10.0)), glm::vec3(0.2));
 	modelMatrix = glm::mat4(1.0f);
+	rotMatrix = glm::mat4(1.0f);
+	translScaMatrix = glm::mat4(1.0f);
 	//rotationAxis = glm::sphericalRand(1.0);
 
 	float speed = 20.0f;
@@ -40,19 +42,24 @@ void RenderItem::Render(bool isShadowPass)
 
 void RenderItem::RenderBoundingBox()
 {
-	glm::mat4 mvpMatrix = graphics->camera.getProjMatrix() * graphics->camera.getViewMatrix() * modelMatrix;
-	graphics->boxShader->SetUniformMatrix4("uMVPMatrix", mvpMatrix);
-	aabb.Render(boundingBoxVBO.get());
+	//glm::mat4 mvpMatrix = graphics->camera.getProjMatrix() * graphics->camera.getViewMatrix() * modelMatrix;
+	//graphics->boxShader->SetUniformMatrix4("uMVPMatrix", mvpMatrix);
+	glm::mat4 tsvpMatrix = graphics->camera.getProjMatrix() * graphics->camera.getViewMatrix();
+	graphics->boxShader->SetUniformMatrix4("uMVPMatrix", tsvpMatrix);
+	//aabb.Render(boundingBoxVBO.get());
+	aabb.Render();
 }
 
 void RenderItem::Update(double deltaTime)
 {
 	//modelMatrix = glm::rotate(modelMatrix, glm::radians(rotationSpeed * (float)deltaTime), rotationAxis);
+	//rotMatrix = glm::rotate(modelMatrix, glm::radians(rotationSpeed * (float)deltaTime), rotationAxis); // NEED TO RECALCULATE AABB
 }
 
 void RenderItem::SetPosition(double x, double y, double z)
 {
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(x, y, z));
+	translScaMatrix = glm::translate(translScaMatrix, glm::vec3(x, y, z));
 }
 
 void RenderItem::SetRotation(float x, float y, float z)
@@ -60,11 +67,16 @@ void RenderItem::SetRotation(float x, float y, float z)
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(x), glm::vec3(1, 0, 0));
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(y), glm::vec3(0, 1, 0));
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(z), glm::vec3(0, 0, 1));
+
+	rotMatrix = glm::rotate(rotMatrix, glm::radians(x), glm::vec3(1, 0, 0));
+	rotMatrix = glm::rotate(rotMatrix, glm::radians(y), glm::vec3(0, 1, 0));
+	rotMatrix = glm::rotate(rotMatrix, glm::radians(z), glm::vec3(0, 0, 1));
 }
 
 void RenderItem::SetScale(double x, double y, double z)
 {
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(x, y, z));
+	translScaMatrix = glm::scale(translScaMatrix, glm::vec3(x, y, z));
 }
 
 void RenderItem::CalculateBoundingBox()
@@ -104,87 +116,9 @@ void RenderItem::CalculateBoundingBox()
 	}
 	boundingMin = glm::vec3(min_x, min_y, min_z);
 	boundingMax = glm::vec3(max_x, max_y, max_z);
-	aabb = BoundingBox(boundingMin, boundingMax);
-	glm::vec3 boundingMin2 = glm::vec3(glm::inverse(modelMatrix) * glm::vec4(boundingMin, 1.0));
-	glm::vec3 boundingMax2 = glm::vec3(glm::inverse(modelMatrix) * glm::vec4(boundingMax, 1.0));
-	boundingMin = glm::inverse(modelMatrix) * glm::vec4(boundingMin, 1.0);
-	boundingMax = glm::inverse(modelMatrix) * glm::vec4(boundingMax, 1.0);
-
-	std::vector<float> verts = {
-		//front
-		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		//back
-		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		//top
-		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMax.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		//bottom
-		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMin.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMin.z, 1.0f,0.5f,0.0f,
-		boundingMax.x, boundingMin.y, boundingMax.z, 1.0f,0.5f,0.0f
-
-		////front
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		////back
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		////top
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMin.z,
-		//boundingMin.x, boundingMax.y, boundingMax.z,
-		//boundingMax.x, boundingMax.y, boundingMin.z,
-		//boundingMax.x, boundingMax.y, boundingMax.z,
-		////bottom
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMin.z,
-		//boundingMin.x, boundingMin.y, boundingMax.z,
-		//boundingMax.x, boundingMin.y, boundingMin.z,
-		//boundingMax.x, boundingMin.y, boundingMax.z
-	};
-
-	boundingBoxVBO = std::make_shared<VertexBuffer>(&verts[0], sizeof(float) * verts.size());
+	aabb = BoundingBox(boundingMin, boundingMax, glm::vec3(0.7, 0.3, 0.0));
+	//boundingMin = glm::inverse(modelMatrix) * glm::vec4(boundingMin, 1.0);
+	//boundingMax = glm::inverse(modelMatrix) * glm::vec4(boundingMax, 1.0);
+	boundingMin = glm::vec4(boundingMin, 1.0);
+	boundingMax = glm::vec4(boundingMax, 1.0);
 }

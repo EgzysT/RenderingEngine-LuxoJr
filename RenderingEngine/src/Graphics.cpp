@@ -8,12 +8,17 @@
 
 #include "Scene.h"
 #include "Utils.h"
+#include "FrustrumCull.h"
+#include "application_window.h"
 
 Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
     : camera(glm::radians(90.0), (double)width / height, 0.01, 1000.0),
     app(app), srcWidth(width), srcHeight(height)
 {
-    app_window = application_window{ width, height, &camera };
+    runCullOctree = false;
+    runDisplayBoundBoxes = false;
+    runDisplayOctree = false;
+    app_window = application_window(width, height, &camera, this);
     glfwSetWindowUserPointer(window, &app_window);
 
     // VAO (needed for core profile)
@@ -28,6 +33,7 @@ Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
     LoadSkybox();
 
     CreateDepthMap();
+    CreateOctree();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -83,10 +89,20 @@ void Graphics::Render()
     glBindTexture(GL_TEXTURE_2D, depthMap);
 
     //activeShader->SetUniformMatrix4("u_LightSpaceMatrix", lightSpaceMatrix);
-    DisplayItems(false);
+    runCullOctree ? DisplayItemsOctree() : DisplayItems(false);
+    //DisplayItems(false);
+    //DisplayItemsOctree();
 
+    //DEBUG drawings
     boxShader->Bind();
-    DisplayAABB();
+    glm::mat4 vpMatrix = camera.getProjMatrix() * camera.getViewMatrix();
+    boxShader->SetUniformMatrix4("uMVPMatrix", vpMatrix);
+    if (runDisplayBoundBoxes) {
+        DisplayAABB();
+    }
+    if (runDisplayOctree) {
+        octreeRoot->RenderRegion();
+    }
 
     // draw skybox as last
     skybox->Render(skyboxShader, &camera);
@@ -235,11 +251,33 @@ void Graphics::DisplayItems(bool isShadowPass)
     }
 }
 
+void Graphics::DisplayItemsOctree()
+{
+    Frustum frustum(camera.getViewProjMatrix());
+
+    octreeRoot->Render(frustum);
+}
+
 void Graphics::DisplayAABB() {
     for (size_t i = 0; i < renderItems.size(); i++)
     {
         renderItems[i].RenderBoundingBox();
     }
+}
+
+void Graphics::CreateOctree()
+{
+#ifdef _DEBUG
+    double radius = 100;
+#endif // _DEBUG
+#ifndef _DEBUG
+    double radius = 500;
+#endif // !_DEBUG
+    glm::vec3 min(-radius, -radius, -radius);
+    glm::vec3 max(radius, radius, radius);
+    BoundingBox bb(min, max, glm::vec3(0.3, 0.7, 0.0));
+    octreeRoot = std::make_shared<Node>(bb, renderItems);
+    octreeRoot->Build();
 }
 
 void Graphics::CreateDepthMap()

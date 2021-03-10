@@ -1,4 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION //THIS DEFINITION IS NECESSARY ONCE, READ THE FILE
+
+#include <iostream>
+
 #include <stb_image.h>
 
 #include "Application.h"
