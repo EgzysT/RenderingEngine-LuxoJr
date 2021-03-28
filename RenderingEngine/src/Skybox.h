@@ -15,6 +15,7 @@ class Skybox
 {
 private:
 	unsigned int cubemapTexture;
+	unsigned int skyboxVAO;
 	std::shared_ptr<VertexBuffer> skyboxVBO;
 
 public:

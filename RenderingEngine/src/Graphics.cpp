@@ -10,21 +10,22 @@
 #include "Utils.h"
 #include "FrustrumCull.h"
 #include "application_window.h"
+#include "Asteroids.h"
 
 Graphics::Graphics(Application* app, GLFWwindow* window, int width, int height)
     : camera(glm::radians(90.0), (double)width / height, 0.01, 1000.0),
     app(app), srcWidth(width), srcHeight(height)
 {
+    runInstancing = false;
     runCullOctree = false;
     runDisplayBoundBoxes = false;
     runDisplayOctree = false;
     app_window = application_window(width, height, &camera, this);
     glfwSetWindowUserPointer(window, &app_window);
 
-    // VAO (needed for core profile)
-    unsigned int vertexArrayObject;    //TODO: Make this useful?
-    glGenVertexArrays(1, &vertexArrayObject);
-    glBindVertexArray(vertexArrayObject);
+    // base VAO (at least one VAO needed for core profile)
+    glGenVertexArrays(1, &baseVAO);
+    glBindVertexArray(baseVAO);
 
     InitShader();
 
@@ -82,14 +83,26 @@ void Graphics::Render()
     glViewport(0, 0, srcWidth, srcHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    activeShader->Bind();
+    runInstancing ? instancesShader->Bind() : activeShader->Bind();
     UpdateLights();
 
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, depthMap);
 
     //activeShader->SetUniformMatrix4("u_LightSpaceMatrix", lightSpaceMatrix);
-    runCullOctree ? DisplayItemsOctree() : DisplayItems(false);
+
+    if (runInstancing) 
+    {
+        instancesShader->Bind();
+        asteroids->RenderInstanced();
+        activeShader->Bind();
+    }
+    else
+    {
+        runCullOctree ? DisplayItemsOctree() : asteroids->Render();
+        //asteroids->Render();
+    }
+
     //DisplayItems(false);
     //DisplayItemsOctree();
 
@@ -97,12 +110,15 @@ void Graphics::Render()
     boxShader->Bind();
     glm::mat4 vpMatrix = camera.getProjMatrix() * camera.getViewMatrix();
     boxShader->SetUniformMatrix4("uMVPMatrix", vpMatrix);
+
+    glBindVertexArray(baseVAO);
     if (runDisplayBoundBoxes) {
         DisplayAABB();
     }
     if (runDisplayOctree) {
         octreeRoot->RenderRegion();
     }
+    //glBindVertexArray(0);
 
     // draw skybox as last
     skybox->Render(skyboxShader, &camera);
@@ -144,13 +160,23 @@ void Graphics::InitShader()
     activeShader->Bind();
     activeShader->SetUniformInteger("u_Texture", 0); 
     activeShader->SetUniformInteger("u_NormalMap", 1);
-    activeShader->SetUniformInteger("u_NormalMap", 1);
     //activeShader->SetUniformInteger("u_ShadowMap", 2);
     activeShader->SetUniformFloat("u_matSpecular", 0.99);
     activeShader->SetUniformFloat("u_matShininess", 20);
 
     activeShader->SetUniformMatrix4("u_ProjMatrix", camera.getProjMatrix());
 
+    instancesShader = std::make_shared<Shader>("..\\assets\\shaders\\vertInstanced.glsl", "..\\assets\\shaders\\fragInstanced.glsl");
+    instancesShader->Bind();
+    instancesShader->SetUniformInteger("u_Texture", 0);
+    instancesShader->SetUniformInteger("u_NormalMap", 1);
+    //instancesShader->SetUniformInteger("u_ShadowMap", 2);
+    instancesShader->SetUniformFloat("u_matSpecular", 0.99);
+    instancesShader->SetUniformFloat("u_matShininess", 20);
+
+    instancesShader->SetUniformMatrix4("u_ProjMatrix", camera.getProjMatrix());
+
+    activeShader->Bind();
     glLineWidth(2);
 }
 
@@ -208,6 +234,9 @@ void Graphics::LoadScene()
 
     Scene scene("..\\assets\\scene.json");
     renderItems = std::move(scene.CreateRenderItems(this));
+    asteroids = std::make_shared<Asteroids>(&renderItems);
+    asteroids->CreateModelMatrices();
+    asteroids->ConfigureInstancedArray();
 }
 
 void Graphics::LoadSkybox() {
@@ -239,7 +268,8 @@ void Graphics::UpdateLights()
     glm::mat4 view = camera.getViewMatrix();
     for (size_t i = 0; i < lights.size(); i++)
     {
-        lights[i].UpdateShader(activeShader, view);
+        lights[i].UpdateShader(activeShader, view); //TODO: later choose one?
+        lights[i].UpdateShader(instancesShader, view);
     }
 }
 
@@ -271,7 +301,8 @@ void Graphics::CreateOctree()
     double radius = 100;
 #endif // _DEBUG
 #ifndef _DEBUG
-    double radius = 500;
+    double radius = 1000;
+    //double radius = 500;
 #endif // !_DEBUG
     glm::vec3 min(-radius, -radius, -radius);
     glm::vec3 max(radius, radius, radius);

@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "Utils.h"
+#include "Time.h"
 
 #define CAM_ANIM_JSON_PATH "..\\assets\\camAnim.json"
 
@@ -138,7 +139,8 @@ glm::mat4 Camera::getViewProjMatrix()
 void Camera::Update()
 {
 	if (camAnimsIterator == camAnims.end()) return;
-	double time = glfwGetTime();
+	//double time = glfwGetTime();
+	double time = Time::GetInstance()->GetCurrentLifetime();
 	if (camAnimsIterator->startTime > time) return;
 	while (camAnimsIterator->endTime < time) {
 		camAnimsIterator++;

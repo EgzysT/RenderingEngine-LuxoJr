@@ -24,9 +24,25 @@ Mesh::MeshEntry::~MeshEntry()
 void Mesh::MeshEntry::InitEntry(const std::vector<Vertex>& verts,
     const std::vector<unsigned int>& indices)
 {
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     numIndices = indices.size();
     vb = std::make_shared<VertexBuffer>(&verts[0] ,sizeof(Vertex) * verts.size());
+
+    //vb->Bind();
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
+
     ib = std::make_shared<IndexBuffer>(&indices[0], numIndices);
+    //ib->Bind();
 }
 
 Mesh::Mesh()
@@ -198,33 +214,58 @@ bool Mesh::InitMaterials(const aiScene* scene, const std::string& filepath)
     return Ret;
 }
 void Mesh::Render() {
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
+    //glEnableVertexAttribArray(0);
+    //glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(2);
+    //glEnableVertexAttribArray(3);
+    //glEnableVertexAttribArray(4);
+    //glEnableVertexAttribArray(5);
+    //glEnableVertexAttribArray(6);
+    //glEnableVertexAttribArray(7);
 
-    for (unsigned int i = 0; i < meshEntries.size(); i++) {
-        meshEntries[i].vb->Bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
+    //for (unsigned int i = 0; i < meshEntries.size(); i++) {
+    //    meshEntries[i].vb->Bind();
+    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
+    //    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
+    //    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
+    //    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
 
-        meshEntries[i].ib->Bind();
+    //    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), 0);
+    //    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (const GLvoid*)16);
+    //    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (const GLvoid*)32);
+    //    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (const GLvoid*)48);
 
+    //    meshEntries[i].ib->Bind();
+
+    //    const unsigned int MaterialIndex = meshEntries[i].matIndex;
+
+    //    if (MaterialIndex < renderMaterials.size() && renderMaterials[MaterialIndex]) {
+    //        renderMaterials[MaterialIndex]->Bind();
+    //    }
+
+    //    glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
+    //}
+
+    //glDisableVertexAttribArray(0);
+    //glDisableVertexAttribArray(1);
+    //glDisableVertexAttribArray(2);
+    //glDisableVertexAttribArray(3);
+    //glDisableVertexAttribArray(4);
+    //glDisableVertexAttribArray(5);
+    //glDisableVertexAttribArray(6);
+    //glDisableVertexAttribArray(7);
+        
+    for (unsigned int i = 0; i < meshEntries.size(); i++)
+    {
         const unsigned int MaterialIndex = meshEntries[i].matIndex;
 
         if (MaterialIndex < renderMaterials.size() && renderMaterials[MaterialIndex]) {
             renderMaterials[MaterialIndex]->Bind();
         }
 
+        glBindVertexArray(meshEntries[i].vao);
         glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
     }
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
 }
 
 void Mesh::RenderBoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
@@ -244,46 +285,4 @@ void Mesh::RenderBoundingBox(glm::vec3 boundingMin, glm::vec3 boundingMax)
     //[...] //back, top, bottom
 
     glEnd();
-}
-
-void Mesh::Render(VertexBuffer* boundingBoxVBO)
-{
-    glEnableVertexAttribArray(0);
-    //glEnableVertexAttribArray(1);
-    //glEnableVertexAttribArray(2);
-    //glEnableVertexAttribArray(3);
-
-    for (unsigned int i = 0; i < meshEntries.size(); i++) {
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnableVertexAttribArray(3);
-        meshEntries[i].vb->Bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);                 // positions
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12); // texCoords
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20); // normals
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32); // tangents
-
-        meshEntries[i].ib->Bind();
-
-        const unsigned int MaterialIndex = meshEntries[i].matIndex;
-
-        if (MaterialIndex < renderMaterials.size() && renderMaterials[MaterialIndex]) {
-            renderMaterials[MaterialIndex]->Bind();
-        }
-
-        glDrawElements(GL_TRIANGLES, meshEntries[i].numIndices, GL_UNSIGNED_INT, 0);
-
-        //RenderBoundingBox(boundingMax, boundingMin);
-        boundingBoxVBO->Bind();
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glDisableVertexAttribArray(3);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-        glDrawArrays(GL_LINES, 0, 32);
-    }
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
 }

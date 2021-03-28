@@ -8,7 +8,7 @@
 #include "FrustrumCull.h"
 
 #define NUM_CHILDREN 8
-#define MIN_BOUNDS 32.0
+#define MIN_BOUNDS 64.0
 
 class RenderItem;
 enum class Octant : unsigned char {

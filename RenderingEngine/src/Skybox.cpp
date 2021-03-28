@@ -53,14 +53,14 @@ Skybox::Skybox(std::vector<std::string> faces)
 
     // skybox VAO
     //unsigned int skyboxVBO;
-    //glGenVertexArrays(1, &skyboxVAO);
+    glGenVertexArrays(1, &skyboxVAO);
     //glGenBuffers(1, &skyboxVBO);
-    //glBindVertexArray(skyboxVAO);
+    glBindVertexArray(skyboxVAO);
     //glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
     //glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     skyboxVBO = std::make_shared<VertexBuffer>(skyboxVertices, sizeof(skyboxVertices));
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     cubemapTexture = LoadCubemap(faces);
 }
@@ -80,10 +80,10 @@ void Skybox::Render(std::shared_ptr<Shader> shader, Camera* camera)
     shader->SetUniformMatrix4("view", view);
     shader->SetUniformMatrix4("projection", camera->getProjMatrix());
     // skybox cube
-    //glBindVertexArray(skyboxVAO);
-    skyboxVBO->Bind();
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindVertexArray(skyboxVAO);
+    //skyboxVBO->Bind();
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     glDrawArrays(GL_TRIANGLES, 0, 36);

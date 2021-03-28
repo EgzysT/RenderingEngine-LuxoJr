@@ -40,9 +40,10 @@ public:
     bool dPressed;
     bool ctrlPressed;
     bool shiftPressed;
-    bool iPressed;
-    bool oPressed;
-    bool pPressed;
+    bool uPressed;  // octree view culling
+    bool iPressed;  // instancing
+    bool oPressed;  // show octree
+    bool pPressed;  // show bounding boxes
 };
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -78,11 +79,22 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if (action == GLFW_PRESS) inputManager->shiftPressed = true;
         else if (action == GLFW_RELEASE) inputManager->shiftPressed = false;
         break;
+    case GLFW_KEY_U:
+        if (action == GLFW_PRESS && !inputManager->uPressed) {
+            inputManager->uPressed = true;
+            auto appWin = (application_window*)glfwGetWindowUserPointer(window);
+            appWin->graphics->runCullOctree = !appWin->graphics->runCullOctree;
+        }
+        else if (action == GLFW_RELEASE) inputManager->uPressed = false;
+        break;
     case GLFW_KEY_I:
         if (action == GLFW_PRESS && !inputManager->iPressed) {
             inputManager->iPressed = true;
             auto appWin = (application_window*)glfwGetWindowUserPointer(window);
-            appWin->graphics->runCullOctree = !appWin->graphics->runCullOctree;
+            appWin->graphics->runInstancing = !appWin->graphics->runInstancing;
+            appWin->graphics->runCullOctree = false;
+            appWin->graphics->runDisplayOctree = false;
+            appWin->graphics->runDisplayBoundBoxes = false;
         }
         else if (action == GLFW_RELEASE) inputManager->iPressed = false;
         break;

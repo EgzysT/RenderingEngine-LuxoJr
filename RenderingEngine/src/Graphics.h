@@ -15,6 +15,7 @@
 #include "application_window.h"
 
 class RenderItem;
+class Asteroids;
 class Application;
 
 class Graphics
@@ -29,7 +30,10 @@ public:
 	std::shared_ptr<Shader> depthShader;
 	std::shared_ptr<Shader> depthShaderDebug;
 	std::shared_ptr<Shader> boxShader;
+	std::shared_ptr<Shader> instancesShader;
 	std::shared_ptr<Node> octreeRoot;
+	std::shared_ptr<Asteroids> asteroids;
+	bool runInstancing;
 	bool runCullOctree;
 	bool runDisplayOctree;
 	bool runDisplayBoundBoxes;
@@ -39,6 +43,7 @@ private:
 	std::shared_ptr<Skybox> skybox;
 	unsigned int depthMapFBO;
 	unsigned int depthMap;
+	unsigned int baseVAO;
 
 	unsigned int srcWidth;
 	unsigned int srcHeight;

@@ -13,9 +13,7 @@ class Graphics;
 class RenderItem
 {
 private:
-	Graphics* graphics;
-	std::shared_ptr<Mesh> mesh;
-	glm::mat4 modelMatrix;
+	
 	glm::mat4 rotMatrix;
 	glm::mat4 translScaMatrix;
 	//glm::vec3 rotationAxis;
@@ -36,5 +34,12 @@ public:
 	void SetRotation(float x, float y, float z);
 	void SetScale(double x, double y, double z);
 	void CalculateBoundingBox();
+
+	Graphics* graphics;
+	std::shared_ptr<Mesh> mesh;
+	glm::mat4 modelMatrix;
+
+	//unsigned int VAO;
+	unsigned int numIndices;
 };
 

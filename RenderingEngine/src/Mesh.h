@@ -43,20 +43,20 @@ struct Material {
 
 class Mesh
 {
-private:
+public:
     struct MeshEntry {
         MeshEntry();
         ~MeshEntry();
         MeshEntry(const MeshEntry&) = default;
         void InitEntry(const std::vector<Vertex>& verts, const std::vector<unsigned int>& indices);
+        unsigned int vao;
         std::shared_ptr<VertexBuffer> vb;
         std::shared_ptr<IndexBuffer> ib;
         unsigned int numIndices;
         unsigned int matIndex;
     };
-    std::vector<MeshEntry> meshEntries;
-    std::vector<std::shared_ptr<Material>> renderMaterials;
 
+private:
 	bool InitMeshFromScene(const aiScene* pScene, const std::string& Filename);
 	void InitMesh(unsigned int Index, const aiMesh* paiMesh);
 	bool InitMaterials(const aiScene* pScene, const std::string& Filename);
@@ -68,6 +68,8 @@ public:
 	~Mesh();
 	bool LoadMesh(const std::string& id);
     void Render();
-	void Render(VertexBuffer* boundingBoxVBO);
+
+    std::vector<std::shared_ptr<Material>> renderMaterials;
+    std::vector<MeshEntry> meshEntries;
 };
 

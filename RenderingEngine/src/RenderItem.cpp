@@ -36,7 +36,6 @@ void RenderItem::Render(bool isShadowPass)
 		graphics->activeShader->SetUniformMatrix4("u_ViewMatrix", graphics->camera.getViewMatrix());
 		graphics->activeShader->SetUniformMatrix4("u_NormalMatrix", normalMatrix);
 	}
-	//mesh->Render(boundingBoxVBO.get());
 	mesh->Render();
 }
 
