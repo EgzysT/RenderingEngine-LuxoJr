@@ -41,7 +41,7 @@ int Application::Init()
     //height = 900;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(width, height, "Real-time Rendering 2020", nullptr, nullptr);
+    window = glfwCreateWindow(width, height, "Renderer 2020", nullptr, nullptr);
     if (!window)
     {
         ERROR_EXIT("Failed to create window or context");

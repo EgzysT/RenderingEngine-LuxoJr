@@ -139,8 +139,8 @@ glm::mat4 Camera::getViewProjMatrix()
 void Camera::Update()
 {
 	if (camAnimsIterator == camAnims.end()) return;
-	//double time = glfwGetTime();
-	double time = Time::GetInstance()->GetCurrentLifetime();
+	double time = glfwGetTime();
+	//double time = Time::GetInstance()->GetCurrentLifetime();
 	if (camAnimsIterator->startTime > time) return;
 	while (camAnimsIterator->endTime < time) {
 		camAnimsIterator++;

@@ -9,6 +9,7 @@
 
 #define NUM_CHILDREN 8
 #define MIN_BOUNDS 64.0
+#define LEAF_CHILDREN 1
 
 class RenderItem;
 enum class Octant : unsigned char {

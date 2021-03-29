@@ -24,6 +24,7 @@ void Time::BeginTime()
     lastTime = glfwGetTime();
     beginTime = lastTime;
     loadingFinishedTime = lastTime;
+    std::cout << "Loading time: " << loadingFinishedTime << " s" << std::endl;
 }
 
 void Time::NewFrameTime()

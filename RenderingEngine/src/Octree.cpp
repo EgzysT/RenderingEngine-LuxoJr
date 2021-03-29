@@ -53,7 +53,7 @@ void Node::Build()
     assert(big2.containsRegion(small2));
 
     // Termination Checks
-    if (objects.size() <= 1) return;
+    if (objects.size() <= LEAF_CHILDREN) return;
     glm::vec3 dimension = region.calculateDimensions();
     for (int i = 0; i < 3; i++)
     {

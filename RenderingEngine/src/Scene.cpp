@@ -43,9 +43,13 @@ std::vector<RenderItem> Scene::CreateRenderItems(Graphics* graphics)
     //double radius = 100;
 #endif // _DEBUG
 #ifndef _DEBUG
+    //int numAsteroids = 25000;
+    //double radius = 500;
     //int numAsteroids = 50000;
     //double radius = 500;
-    int numAsteroids = 100000;
+    //int numAsteroids = 100000;
+    ////double radius = 1000;
+    int numAsteroids = 200000;
     double radius = 1000;
 #endif // !_DEBUG
     for (int i = 0; i < numAsteroids; i++) {
